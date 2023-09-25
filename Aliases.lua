@@ -18,7 +18,7 @@ VuhDo Implementation:
 @VuhDoBarCustomizerHealth.lua line 32-33
 
 local RG_ALTS_SETTINGS =  _G.RG_ALTS_SETTINGS
-local RG_ALTS_DB = _G.RG_ALTS_DB 
+local RG_ALTS_DB = _G.RG_ALTS_DB
 
 @VuhDoBarCustomizerHealth.lua line 643
 
@@ -27,7 +27,7 @@ tNickname = RG_ALTS_SETTINGS and RG_ALTS_SETTINGS["VuhDo"] and RG_ALTS_DB[ tInfo
 ------------------------------------------------------------------------
 ------------------------------------------------------------------------
 
-Caligo KHM Texture request: 
+Caligo KHM Texture request:
 
 suspect - KHMRaidFrames.lua line 103
 
@@ -49,14 +49,14 @@ probably the most important
 				local groupType = IsInRaid() and "raid" or "party"
 
 				local isInCombatLockDown = InCombatLockdown()
-			
+
 				if groupType ~= KHMRaidFrames.currentGroup then
 					KHMRaidFrames:RefreshProfileSettings()
 				end
-			
+
 				local name = frame and frame:GetName()
 				if not name then return end
-			
+
 				if not UnitExists(frame.displayedUnit) then return end
 				KHMRaidFrames:LayoutFrame(frame, groupType, isInCombatLockDown)
 
@@ -64,12 +64,12 @@ probably the most important
 	end
 ---------------------
 
-TODO: Test all modules, add saved variabled, add comms to sync data 
+
 If there is a numbers in list delete them. Remove redunant spaces.
 
 ]]
 
-local addonName, addonTable = ...
+local GlobalAddonName, addonTable = ...
 
 local Comm = LibStub:GetLibrary("AceComm-3.0")
 local LibDeflate = LibStub:GetLibrary("LibDeflate")
@@ -78,15 +78,17 @@ local LibDeflate = LibStub:GetLibrary("LibDeflate")
 -- RG_ALTS_DB DEFAULTS
 ------------------------------------------------------------------------
 --[[
-	CHAT GPT REQUEST:
-This is list of Rak Gaming character names, first character in string is alias, others are chracter names.
-Create lua table RG_ALTS_DB where character name is key and alias is value.
-One character name one table entry.
 
 Список псевдонимов для чаров Рак Гейминга. Первое слово в строке - псевдоним, остальные - имена чаров.
 
 Изначально брал чаров из главной гильдейской таблицы.
 Если не хватает какого-то вашего альта, или думаете что чей-то псевдоним не подходит, то пишите сюда.
+	CHAT GPT REQUEST:
+This is list of Rak Gaming character names, first character in string is alias, others are chracter names.
+Create lua table RG_ALTS_DB_DEFAULT where character name is key and alias is value.
+One character name one table entry.
+
+
 
 Нерчо - Нерчодк Нерчо Нерчолинь Нерчоп Нерчохд
 Рома - Ромачибрю Кринжелина Ромадесгрип Хедстронгхх Хедстронгх Крусадэс
@@ -97,11 +99,11 @@ One character name one table entry.
 Лайт - Лайтпалочка Драгонпупс Сашкастарфол Батлкрабс Крепкийтотем
 Ловес - Ловес Аншен Совела Шоквес Нидхогг Ловська
 Фейтя - Фейтясд Фейтя Фейтяхдд Фейтяоом Фейтякринж
-Омежечка - Омежечкаа Омежадракон Омежаэвокер Омежасэнсэй Омежка Омежечка
-Dxb - Dxbd Dxbwarr Dxbmage Mejrenp
+Омежа - Омежечкаа Омежадракон Омежаэвокер Омежасэнсэй Омежка Омежечка
+Муни - Dxbd Dxbwarr Dxbmage Mejrenp
 Змей - Змейняша Змейняшка Змейсекс Змейнуашо Змейзло Змейснайп
-Окриса - Окриса Арурун Лайму Рунрун Сиаро Риккири
-Турбо - Турбоглэйв Турбоклык Турбобёрн Турбошайн
+Эмпрайз - Окриса Арурун Лайму Рунрун Сиаро Риккири
+Турба - Турбоглэйв Турбоклык Турбобёрн Турбошайн
 Анти - Антилокк Полэвокер Антии Антих Антиидот Антирад
 Пикви - Крошкапикви Аувета Япивандополо Крошкамагии Нигайки
 Авэ - Авэвокер Авэ Авэвафля Авэмун Авэстихий
@@ -122,198 +124,169 @@ Dxb - Dxbd Dxbwarr Dxbmage Mejrenp
 
 ]]
 
-local RG_ALTS_DB
+-- local RG_ALTS_DB = nil
 
-local RG_ALTS_DB_DEFAULT = {
+RG_ALTS_DB_DEFAULT = {
     ["Нерчодк"] = "Нерчо",
     ["Нерчо"] = "Нерчо",
     ["Нерчолинь"] = "Нерчо",
     ["Нерчоп"] = "Нерчо",
     ["Нерчохд"] = "Нерчо",
-
     ["Ромачибрю"] = "Рома",
     ["Кринжелина"] = "Рома",
     ["Ромадесгрип"] = "Рома",
     ["Хедстронгхх"] = "Рома",
     ["Хедстронгх"] = "Рома",
     ["Крусадэс"] = "Рома",
-
     ["Сэнтенза"] = "Володя",
     ["Вовадезкойл"] = "Володя",
     ["Хантеротадоя"] = "Володя",
     ["Чыкъчырык"] = "Володя",
-
     ["Каллиго"] = "Кали",
     ["Калиприст"] = "Кали",
     ["Калитян"] = "Кали",
     ["Калишаман"] = "Кали",
     ["Калиэвокер"] = "Кали",
-
     ["Смородинкао"] = "Смородина",
     ["Смородинуа"] = "Смородина",
-    ["Смородиная"] = "Смородина",
+    ["Смородиная"] = "Sмородина",
     ["Смородиновая"] = "Смородина",
     ["Смородинкова"] = "Смородина",
     ["Смородька"] = "Смородина",
-
     ["Нимбмейн"] = "Нимб",
     ["Нимбэвокер"] = "Нимб",
     ["Нимбальт"] = "Нимб",
     ["Нимбтвинк"] = "Нимб",
     ["Нимбшаман"] = "Нимб",
     ["Нимбсд"] = "Нимб",
-
     ["Лайтпалочка"] = "Лайт",
     ["Драгонпупс"] = "Лайт",
     ["Сашкастарфол"] = "Лайт",
     ["Батлкрабс"] = "Лайт",
     ["Крепкийтотем"] = "Лайт",
-
     ["Ловес"] = "Ловес",
     ["Аншен"] = "Ловес",
     ["Совела"] = "Ловес",
     ["Шоквес"] = "Ловес",
     ["Нидхогг"] = "Ловес",
     ["Ловська"] = "Ловес",
-
     ["Фейтясд"] = "Фейтя",
     ["Фейтя"] = "Фейтя",
     ["Фейтяхдд"] = "Фейтя",
     ["Фейтяоом"] = "Фейтя",
     ["Фейтякринж"] = "Фейтя",
-
-    ["Омежечкаа"] = "Омежечка",
-    ["Омежадракон"] = "Омежечка",
-    ["Омежаэвокер"] = "Омежечка",
-    ["Омежасэнсэй"] = "Омежечка",
-    ["Омежка"] = "Омежечка",
-
-    ["Dxbd"] = "Dxb",
-    ["Dxbwarr"] = "Dxb",
-    ["Dxbmage"] = "Dxb",
-    ["Mejrenp"] = "Dxb",
-
+    ["Омежечкаа"] = "Омежа",
+    ["Омежадракон"] = "Омежа",
+    ["Омежаэвокер"] = "Омежа",
+    ["Омежасэнсэй"] = "Омежа",
+    ["Омежка"] = "Омежа",
+    ["Омежечка"] = "Омежа",
+    ["Dxbd"] = "Муни",
+    ["Dxbwarr"] = "Муни",
+    ["Dxbmage"] = "Муни",
+    ["Mejrenp"] = "Муни",
     ["Змейняша"] = "Змей",
     ["Змейняшка"] = "Змей",
     ["Змейсекс"] = "Змей",
     ["Змейнуашо"] = "Змей",
     ["Змейзло"] = "Змей",
     ["Змейснайп"] = "Змей",
-
-    ["Окриса"] = "Окриса",
-    ["Арурун"] = "Окриса",
-    ["Лайму"] = "Окриса",
-    ["Рунрун"] = "Окриса",
-    ["Сиаро"] = "Окриса",
-    ["Риккири"] = "Окриса",
-
-    ["Турбоглэйв"] = "Турбо",
-    ["Турбоклык"] = "Турбо",
-    ["Турбобёрн"] = "Турбо",
-    ["Турбошайн"] = "Турбо",
-
+    ["Окриса"] = "Эмпрайз",
+    ["Арурун"] = "Эмпрайз",
+    ["Лайму"] = "Эмпрайз",
+    ["Рунрун"] = "Эмпрайз",
+    ["Сиаро"] = "Эмпрайз",
+    ["Риккири"] = "Эмпрайз",
+    ["Турбоглэйв"] = "Турба",
+    ["Турбоклык"] = "Турба",
+    ["Турбобёрн"] = "Турба",
+    ["Турбошайн"] = "Турба",
     ["Антилокк"] = "Анти",
     ["Полэвокер"] = "Анти",
     ["Антии"] = "Анти",
     ["Антих"] = "Анти",
     ["Антиидот"] = "Анти",
     ["Антирад"] = "Анти",
-
     ["Крошкапикви"] = "Пикви",
     ["Аувета"] = "Пикви",
     ["Япивандополо"] = "Пикви",
     ["Крошкамагии"] = "Пикви",
     ["Нигайки"] = "Пикви",
-
     ["Авэвокер"] = "Авэ",
     ["Авэ"] = "Авэ",
     ["Авэвафля"] = "Авэ",
     ["Авэмун"] = "Авэ",
     ["Авэстихий"] = "Авэ",
-
     ["Батькито"] = "Бадито",
     ["Друито"] = "Бадито",
     ["Магито"] = "Бадито",
     ["Эвокерито"] = "Бадито",
     ["Чернокнижито"] = "Бадито",
     ["Электрито"] = "Бадито",
-
     ["Твиннблейд"] = "Твин",
     ["Твинфлекс"] = "Твин",
     ["Твинпипоклэп"] = "Твин",
     ["Твинбладж"] = "Твин",
-
     ["Фриэвок"] = "Фриран",
     ["Фрираан"] = "Фриран",
     ["Фриранлк"] = "Фриран",
     ["Фриранк"] = "Фриран",
-
     ["Пауэл"] = "Пауэл",
     ["Килкомандер"] = "Пауэл",
     ["Лейонхэндс"] = "Пауэл",
     ["Рукадаггер"] = "Пауэл",
     ["Метеорбласт"] = "Пауэл",
     ["Дэзэнддикей"] = "Пауэл",
-
     ["Ракдвакдпс"] = "Дарклесс",
     ["Графчпокало"] = "Дарклесс",
     ["Пернатыйдуб"] = "Дарклесс",
     ["Хисяко"] = "Дарклесс",
     ["Левтрикдпс"] = "Дарклесс",
     ["Брызгни"] = "Дарклесс",
-
     ["Фейсмикх"] = "Фейсмик",
     ["Пошапкинс"] = "Фейсмик",
     ["Фэйсмик"] = "Фейсмик",
     ["Лёгфлесс"] = "Фейсмик",
     ["Фейсмйк"] = "Фейсмик",
     ["Фейсмик"] = "Фейсмик",
-
     ["Варсикфейс"] = "Варсик",
     ["Варсикус"] = "Варсик",
     ["Роняюзапад"] = "Варсик",
     ["Вэбзик"] = "Варсик",
     ["Варсенуз"] = "Варсик",
     ["Солеваяняшка"] = "Варсик",
-
     ["Кройфель"] = "Кройфель",
     ["Кройфёль"] = "Кройфель",
     ["Кроифёль"] = "Кройфель",
     ["Кроифель"] = "Кройфель",
     ["Папашкинз"] = "Кройфель",
     ["Триксгеймер"] = "Кройфель",
-
-    ["Синххже"] = "Синх",
-    ["Синхм"] = "Синх",
-    ["Снхх"] = "Синх",
-    ["Синххдх"] = "Синх",
-    ["Синхп"] = "Синх",
-    ["Синххводонос"] = "Синх",
-
+    ["Синххже"] = "Синхх",
+    ["Синхм"] = "Синхх",
+    ["Снхх"] = "Синхх",
+    ["Синххдх"] = "Синхх",
+    ["Синхп"] = "Синхх",
+    ["Синххводонос"] = "Синхх",
     ["Селфлессх"] = "Селфлесс",
     ["Селфдк"] = "Селфлесс",
     ["Селфмонк"] = "Селфлесс",
     ["Всталфлесс"] = "Селфлесс",
     ["Секамференс"] = "Селфлесс",
     ["Селфпамп"] = "Селфлесс",
-
     ["Мишокз"] = "Мишок",
     ["Мишокэ"] = "Мишок",
     ["Джоджогёрл"] = "Мишок",
     ["Мишоксемпай"] = "Мишок",
-
     ["Сквишех"] = "Сквишех",
     ["Сквишелол"] = "Сквишех",
     ["Сквише"] = "Сквишех",
     ["Метаесть"] = "Сквишех",
-
     ["Мэтлокк"] = "Мэт",
     ["Мэтдрэйк"] = "Мэт",
     ["Ангратар"] = "Мэт",
     ["Эгвэйн"] = "Мэт",
     ["Мэткоутон"] = "Мэт",
     ["Мэтх"] = "Мэт",
-
     ["Эндьюранс"] = "Эндьюранс",
     ["Эндьюрансшп"] = "Эндьюранс",
     ["Эндьюрансс"] = "Эндьюранс",
@@ -387,6 +360,7 @@ Comm:RegisterComm("RGAliasD", function(prefix, message, distribution, sender)
 		local encoded = LibDeflate:DecodeForWoWAddonChannel(message)
 		local decompressed = LibDeflate:DecompressDeflate(encoded)
 
+		print("|cffee5555[Rak Gaming Aliases]|r Importing data from", sender, "[", distribution, "]")
 		local data = {strsplit("\n",decompressed)}
 		for i=1,#data do
 			local alias, names = strsplit("^",data[i],2)
@@ -394,7 +368,7 @@ Comm:RegisterComm("RGAliasD", function(prefix, message, distribution, sender)
 				local chars = {strsplit("^",names)}
 				for j=1,#chars do
 					RG_ALTS_DB[chars[j]] = alias
-					print("Importing", chars[j], "as", alias)
+					-- print("Importing", chars[j], "as", alias)
 				end
 			end
 		end
@@ -413,33 +387,38 @@ end
 
 Comm:RegisterComm("RGAliasR", function(prefix, message, distribution, sender)
 	if distribution == "RAID" or distribution == "PARTY" then
-		-- check permissions, only send data if player is group or raid leader 
+		-- check permissions, only send data if player is group or raid leader
 		if UnitIsGroupLeader('player') then
 			SendAliasData()
 		end
-		
+
 	end
 end)
 
 
 
 local function ResetRG_ALTS_DB()
-	RG_ALTS_DB = RG_ALTS_DB_DEFAULT
+	RG_ALTS_DB = CopyTable(RG_ALTS_DB_DEFAULT)
 end
 
 local addon = CreateFrame("Frame")
 addon:RegisterEvent("ADDON_LOADED")
-addon:SetScript("OnEvent", function(self)
+addon:SetScript("OnEvent", function(self,event, ...)
+	local addonName = ...
+	if addonName ~= GlobalAddonName then
+		return
+	end
 	print("|cffee5555[Rak Gaming Aliases]|r: Ready")
-	RG_ALTS_DB = _G.RG_ALTS_DB or RG_ALTS_DB_DEFAULT
+	RG_ALTS_DB = _G.RG_ALTS_DB or CopyTable(RG_ALTS_DB_DEFAULT)
+	_G.RG_ALTS_DB = RG_ALTS_DB
 	RG_ALTS_SETTINGS = _G.RG_ALTS_SETTINGS or {
-		["Blizzard"] = true,
-		["ShadowedUF"] = true,
-		-- ["Grid2"] = true,
-		-- ["ElvUI"] = true,
-		["VuhDo"] = true,
-		["KHM"] = true,
-		["ShestakUI"] = true,
+		["Blizzard"] = false,
+		["ShadowedUF"] = false,
+		-- ["Grid2"] = false,
+		-- ["ElvUI"] = false,
+		["VuhDo"] = false,
+		["KHM"] = false,
+		["ShestakUI"] = false,
 	}
 	addonTable.RG_ALTS_DB = RG_ALTS_DB
 
@@ -553,63 +532,61 @@ SlashCmdList["RG_ALIAS"] = handler
 --[[
 GUIDELINES
 ## ElvUI
-	1. Заходим в ElvUI -> Рамки юнитов -> Одиночные/Груповые юниты -> Выбираем нужный фрейм(например Рейд 1).
-	2. Находим нужную вкладку с тектом, обычно это или "Имя" или "Свой текст".
-	3. Заменяем старый тег на новый.
-	В основном нужно заменить "name" на "nameRG", например [name:short] -> [nameRG:short] 
-	Полный список новых тегов можно посмотреть во вкладке "Доступные теги" - Rak Gaming Health/Names/Target
+В ElvUI нужно выставить новые теги там где хотите видеть псевдонимы вместо ников.
 
-	Повторить для всех фреймов, которые нужно изменить.
-	
+1. Заходим в ElvUI -> Рамки юнитов -> Одиночные/Груповые юниты -> Выбираем нужный фрейм(например Рейд 1).
+2. Находим нужную вкладку с тектом, обычно это или "Имя" или "Свой текст".
+3. Заменяем старый тег на новый.
+В основном нужно заменить "name" на "nameRG", например [name:short] -> [nameRG:short]
+Полный список новых тегов можно посмотреть во вкладке "Доступные теги" - Rak Gaming Health/Names/Target
+
+Повторить для всех фреймов, которые нужно изменить.
+
 ## Shadowed Unit Frames
-	1. SUF -> нужный фрейм -> Текст/Теги
-	2. Находим поле где у вас было [name] или [( )name] или что-то в таком стиле.
-	3. Заменяем 
-		либо через интерфейс тагов: пролистать вниз, снять галочку с "Имя объекта" и 
-		поставить на "RG Alias" или RG Alias(Class colored)
-		
-		либо вручную: [( )name] -> [( )RG_Name] или [( )RG_Name_ClassColored]
+1. SUF -> нужный фрейм -> Текст/Теги
+2. Находим поле где у вас было [name] или [( )name] или что-то в таком стиле.
+3. Заменяем
+	либо через интерфейс тагов: пролистать вниз, снять галочку с "Имя объекта" и
+	поставить на "RG Alias" или RG Alias(Class colored)
 
-	Повторить для всех фреймов, которые нужно изменить.
+	либо вручную: [( )name] -> [( )RG_Name] или [( )RG_Name_ClassColored]
 
-## Blizzard
-	Все работает автоматически:
-	
-	Для включения/выключения использовать:
-	/rgalias enable Blizzard
-	/rgalias disable Blizzard
+Повторить для всех фреймов, которые нужно изменить.
+
+При создании нового профиля в SUF, таги появиться только после /reload
+
+## Blizzard(только рейдфреймы)
+Для включения/выключения использовать:
+/rgalias enable Blizzard
+/rgalias disable Blizzard
 
 ## VuhDo
-	Для работы с вуду нужно поставить отедльную версию VuhDo.
+Для работы с вуду нужно поставить отедльную версию VuhDo.
 
-	Все работает автоматически:
-
-	Для включения/выключения использовать:
-	/rgalias enable VuhDo
-	/rgalias disable VuhDo
+Для включения/выключения использовать:
+/rgalias enable VuhDo
+/rgalias disable VuhDo
 
 ## KHM
-	Все работает автоматически:
+Работает только если в KHM включено изменение имен на фреймах. В остальных случаях использовать Blizzard.
 
-	Для включения/выключения использовать:
-	/rgalias enable KHM
-	/rgalias disable KHM
+Для включения/выключения использовать:
+/rgalias enable KHM
+/rgalias disable KHM
 
 ## Grid2
-	1. /grid2 -> Индикаторы
-	2. Находим индикатор к которому прикреплено состояние "название", выключаем его
-	3. Внизу находим состояние Rak Gaming Alias, включаем его
-	4. Убедиться что состояние Rak Gaming Alias находится выше других состояний по приоритету 
+1. /grid2 -> Индикаторы
+2. Находим индикатор к которому прикреплено состояние "название", выключаем его
+3. Внизу находим состояние Rak Gaming Alias, включаем его
+4. Убедиться что состояние Rak Gaming Alias находится выше других состояний по приоритету
 
-## ShestakUI
-	Все работает автоматически:
+## ShestakUI(только рейдфреймы вроде...) ¯\_(ツ)_/¯
+Для включения/выключения использовать:
+/rgalias enable ShestakUI
+/rgalias disable ShestakUI
 
-	Для включения/выключения использовать:
-	/rgalias enable ShestakUI
-	/rgalias disable ShestakUI
-	
 **После использования комманда /rgalias enable/disable нужно перезапустить интерфейс что бы изменения вступили в силу.**
 
 
-	
+
 ]]

@@ -52,7 +52,9 @@
 		"UnitIsGroupLeader",
 		"GetText",
 		"ShestakUI",
-		"CUSTOM_CLASS_COLORS"
+		"CUSTOM_CLASS_COLORS",
+		"UnitClass",
+		"RAID_CLASS_COLORS"
 	],
     "Lua.diagnostics.disable": [
 		"lowercase-global",

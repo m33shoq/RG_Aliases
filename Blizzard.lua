@@ -1,5 +1,4 @@
 local addonName, addonTable = ...
-local precise = 0
 
 local RG_UnitName = addonTable.RG_UnitName
 
@@ -17,25 +16,13 @@ function addonTable.HookBlizzard()
 	hooksecurefunc("CompactUnitFrame_UpdateName",function(frame)
 		if frame and not frame.UpdateNameOverride and not frame:IsForbidden() then
 			local frame_name = frame:GetName()
-			
+
 			if frame_name and
-							(
-							frame_name:find("^CompactRaidGroup%dMember%d")
-							or frame_name:find("^CompactPartyFrameMember%d")
-							-- or frame_name:find("^PartyMemberFrame%d")
-							-- or frame_name:find("^CompactRaidFrame%d")
-							)
-							and
-							frame.unit and frame.name
-			then
-				local m = frame_name and 
 				(
-				frame_name:match("^CompactRaidGroup%dMember%d")
-				or frame_name:match("^CompactPartyFrameMember%d")
-				-- or frame_name:match("^PartyMemberFrame%d")
-				-- or frame_name:match("^CompactRaidFrame%d")
+				 frame_name:find("^CompactRaidGroup%dMember%d") or
+				 frame_name:find("^CompactPartyFrameMember%d")
 				)
-				
+			then
 				local unit_name = RG_UnitName(frame.unit)
 				if unit_name then
 					frame.name:SetText(unit_name)
