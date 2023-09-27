@@ -114,7 +114,7 @@ RG_ALTS_DB_DEFAULT = {
 Анти - Антилокк Полэвокер Антии Антих Антиидот Антирад
 Пикви - Крошкапикви Аувета Япивандополо Крошкамагии Нигайки
 Авэ - Авэвокер Авэ Авэвафля Авэмун Авэстихий Авэрейдж
-Бадито - Батькито Друито Магито Эвокерито Чернокнижито Электрито
+Бадито - Батькито Друито Магито Эвокерито Чернокнижито Электрито Рогито
 Твин - Твиннблейд Твинфлекс Твинпипоклэп Твинбладж
 Фриран - Фриэвок Фрираан Фриранлк Фриранк
 Пауэл - Пауэл Килкомандер Лейонхэндс Рукадаггер Метеорбласт Дэзэнддикей Пятьдесять
@@ -447,6 +447,29 @@ local function ResetRG_ALTS_DB()
 	RG_ALTS_DB = CopyTable(RG_ALTS_DB_DEFAULT)
 end
 
+local modules = {
+	["Blizzard"] = true,
+	["ShadowedUF"] = true,
+	-- ["Grid2"] = true,
+	-- ["ElvUI"] = true,
+	["VuhDo"] = true,
+	["KHM"] = true,
+	["ShestakUI"] = true,
+	["MRTNote"] = true,
+	["MRTCD"] = true,
+}
+local modulesString = [[
+
+modules:
+Blizzard
+ShadowedUF
+KHM
+VuhDo
+ShestakUI
+MRTNote
+MRTCD
+]]
+
 local addon = CreateFrame("Frame")
 addon:RegisterEvent("ADDON_LOADED")
 addon:SetScript("OnEvent", function(self,event, ...)
@@ -465,8 +488,15 @@ addon:SetScript("OnEvent", function(self,event, ...)
 		["VuhDo"] = false,
 		["KHM"] = false,
 		["ShestakUI"] = false,
+		["MRTNote"] = false,
+		["MRTCD"] = false,
 	}
 	addonTable.RG_ALTS_DB = RG_ALTS_DB
+	for k,v in pairs(modules) do
+		if RG_ALTS_SETTINGS[k] == nil then
+			RG_ALTS_SETTINGS[k] = false
+		end
+	end
 
 	if RG_ALTS_SETTINGS["ShadowedUF"] and addonTable.HookSUF then
 		addonTable.HookSUF()
@@ -484,6 +514,14 @@ addon:SetScript("OnEvent", function(self,event, ...)
 		addonTable.HookShestakUI()
 	end
 
+	if RG_ALTS_SETTINGS["MRTNote"] and addonTable.HookMRTNote then
+		addonTable.HookMRTNote()
+	end
+
+	if RG_ALTS_SETTINGS["MRTCD"] and addonTable.HookMRTCD then
+		addonTable.HookMRTCD()
+	end
+
 	self:UnregisterEvent("ADDON_LOADED")
 end)
 
@@ -492,24 +530,7 @@ end)
 ------------------------------------------------------------------------
 string_gmatch = string.gmatch
 SLASH_RG_ALIAS1 = "/rgalias"
-local modules = {
-	["Blizzard"] = true,
-	["ShadowedUF"] = true,
-	-- ["Grid2"] = true,
-	-- ["ElvUI"] = true,
-	["VuhDo"] = true,
-	["KHM"] = true,
-	["ShestakUI"] = true,
-}
-local modulesString = [[
 
-modules:
-Blizzard
-ShadowedUF
-KHM
-VuhDo
-ShestakUI
-]]
 
 local function handler(msg)
 	local arg1, arg2, arg3

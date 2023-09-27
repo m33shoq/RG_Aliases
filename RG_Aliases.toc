@@ -1,9 +1,9 @@
 ## Interface: 100107
-## Title: Rak Gaming Aliases 
+## Title: Rak Gaming Aliases
 ## Author: m33shoq
 ## Version: 1
 ## SavedVariables: RG_ALTS_DB, RG_ALTS_SETTINGS
-## OptionalDeps: Grid2, ElvUI, ShadowedUnitFrames, KHMRaidFrames, ShestakUI
+## OptionalDeps: Grid2, ElvUI, ShadowedUnitFrames, KHMRaidFrames, ShestakUI, MRT
 ## IconTexture: Interface\AddOns\RG_Aliases\logo.png
 
 embeds.xml
@@ -16,3 +16,4 @@ Blizzard.lua
 ShadowedUF.lua
 KHM.lua
 ShestakUI.lua
+MRT.lua
