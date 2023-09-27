@@ -4,23 +4,22 @@ local RG_UnitName = addonTable.RG_UnitName
 
 local function UpdateNameOverride(self)
 	local unit_name = RG_UnitName(self.displayedUnit)
-	local old_name = self.name:GetText()
-	if unit_name ~= old_name then
-		self.name:SetText(unit_name)
-	end
+	self.name:SetText(unit_name)
 	return true
 end
 
 function addonTable.HookBlizzard()
 	print("|cffee5555[Rak Gaming Aliases]|r Blizzard frames HOOKED")
 	hooksecurefunc("CompactUnitFrame_UpdateName",function(frame)
-		if frame and not frame.UpdateNameOverride and not frame:IsForbidden() then
+		if frame and not frame.UpdateNameOverride and not frame:IsForbidden() and not frame.NOTAVALID then
 			local frame_name = frame:GetName()
 
 			if frame_name and
 				(
 				 frame_name:find("^CompactRaidGroup%dMember%d") or
-				 frame_name:find("^CompactPartyFrameMember%d")
+				 frame_name:find("^CompactPartyFrameMember%d") or
+				 frame_name:find("^CompactRaidFrame%d") or
+				 frame_name:find("^PartyMemberFrame%d")
 				)
 			then
 				local unit_name = RG_UnitName(frame.unit)
@@ -28,6 +27,8 @@ function addonTable.HookBlizzard()
 					frame.name:SetText(unit_name)
 				end
 				frame.UpdateNameOverride = UpdateNameOverride
+			else
+				frame.NOTAVALID = true
 			end
 		end
 	end)

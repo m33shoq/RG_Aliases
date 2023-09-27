@@ -406,7 +406,7 @@ Comm:RegisterComm("RGAliasD", function(prefix, message, distribution, sender)
 		local encoded = LibDeflate:DecodeForWoWAddonChannel(message)
 		local decompressed = LibDeflate:DecompressDeflate(encoded)
 
-		print("|cffee5555[Rak Gaming Aliases]|r Importing data from", sender, "[", distribution, "]")
+		print("|cffee5555[Rak Gaming Aliases]|r Importing data from", sender)
 		local data = {strsplit("\n",decompressed)}
 		for i=1,#data do
 			local alias, names = strsplit("^",data[i],2)
@@ -605,6 +605,12 @@ SlashCmdList["RG_ALIAS"] = handler
 Для включения/выключения использовать:
 /rgalias enable Blizzard
 /rgalias disable Blizzard
+
+### Известные проблемы
+Хук близовских рейдфреймов может иногда вызывать ошибку
+```
+Модификация 'RG_Aliases' пыталась вызвать защищенную функцию 'CompactRaidGroup4Member4:SetSize()'.
+```
 ## VuhDo
 Для работы с вуду нужно поставить отедльную версию VuhDo.
 
@@ -628,12 +634,5 @@ SlashCmdList["RG_ALIAS"] = handler
 /rgalias disable ShestakUI
 
 ***После использования комманд /rgalias enable/disable нужно перезапустить интерфейс что бы изменения вступили в силу.***
-
-### Известные проблемы
-Хук близовских рейдфреймов может иногда вызывать ошибку
-```
-Модификация 'RG_Aliases' пыталась вызвать защищенную функцию 'CompactRaidGroup4Member4:SetSize()'.
-```
-
 
 ]]
