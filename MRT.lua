@@ -1,6 +1,7 @@
 local addonName, addonTable = ...
 local GMRT = _G.GMRT
 
+if not GMRT then return end
 
 local function RaidCooldowns_Bar_TextName(eventName,bar,gsub_data,barData)
 	-- DevTool:AddData(barData)
