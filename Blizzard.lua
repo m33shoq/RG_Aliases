@@ -11,7 +11,7 @@ end
 function addonTable.HookBlizzard()
 	print("|cffee5555[Rak Gaming Aliases]|r Blizzard frames HOOKED")
 	hooksecurefunc("CompactUnitFrame_UpdateName",function(frame)
-		if frame and not frame.UpdateNameOverride and not frame:IsForbidden() and not frame.NOTAVALID then
+		if frame and not frame:IsForbidden() then
 			local frame_name = frame:GetName()
 
 			if frame_name and
@@ -26,9 +26,6 @@ function addonTable.HookBlizzard()
 				if unit_name then
 					frame.name:SetText(unit_name)
 				end
-				frame.UpdateNameOverride = UpdateNameOverride
-			else
-				frame.NOTAVALID = true
 			end
 		end
 	end)

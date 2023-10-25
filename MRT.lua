@@ -6,8 +6,22 @@ if not GMRT then return end
 local function RaidCooldowns_Bar_TextName(eventName,bar,gsub_data,barData)
 	-- DevTool:AddData(barData)
     --actual name is barData.fullName or barData.name [w/o server]
+
+	local barParent = bar.parent
 	local name = barData.name
 	local customName = RG_ALTS_DB[name] or name
+
+	if barParent.textShowTargetName and barData.targetName then
+		local time = (bar.curr_end or 0) - GetTime() + 1
+		if time >=1 then
+			customName = customName .. " > " .. barData.targetName
+		end
+	end
+	if barData.specialAddText then
+		customName = customName .. (barData.specialAddText() or "")
+	end
+
+
 	--local realm = barData.fullName:match("^.-%-(.-)$")
 	if customName ~= gsub_data.name then
 		gsub_data.name = customName
