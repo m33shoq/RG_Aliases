@@ -512,27 +512,27 @@ addon:SetScript("OnEvent", function(self,event, ...)
 		end
 	end
 
-	if RG_ALTS_SETTINGS["ShadowedUF"] and addonTable.HookSUF then
+	if RG_ALTS_SETTINGS["shadoweduf"] and addonTable.HookSUF then
 		addonTable.HookSUF()
 	end
 
-	if RG_ALTS_SETTINGS["Blizzard"] and addonTable.HookBlizzard then
+	if RG_ALTS_SETTINGS["blizzard"] and addonTable.HookBlizzard then
 		addonTable.HookBlizzard()
 	end
 
-	if RG_ALTS_SETTINGS["KHM"] and addonTable.HookKHM then
+	if RG_ALTS_SETTINGS["khm"] and addonTable.HookKHM then
 		addonTable.HookKHM()
 	end
 
-	if RG_ALTS_SETTINGS["ShestakUI"] and addonTable.HookShestakUI then
+	if RG_ALTS_SETTINGS["shestakui"] and addonTable.HookShestakUI then
 		addonTable.HookShestakUI()
 	end
 
-	if RG_ALTS_SETTINGS["MRTNote"] and addonTable.HookMRTNote then
+	if RG_ALTS_SETTINGS["mrtnote"] and addonTable.HookMRTNote then
 		addonTable.HookMRTNote()
 	end
 
-	if RG_ALTS_SETTINGS["MRTCD"] and addonTable.HookMRTCD then
+	if RG_ALTS_SETTINGS["mrtcd"] and addonTable.HookMRTCD then
 		addonTable.HookMRTCD()
 	end
 
