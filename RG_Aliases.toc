@@ -1,7 +1,7 @@
 ## Interface: 100107
 ## Title: Rak Gaming Aliases
 ## Author: m33shoq
-## Version: 2
+## Version: 3
 ## SavedVariables: RG_ALTS_DB, RG_ALTS_SETTINGS
 ## OptionalDeps: Grid2, ElvUI, ShadowedUnitFrames, KHMRaidFrames, ShestakUI, MRT, WeakAuras
 ## IconTexture: Interface\AddOns\RG_Aliases\logo.png
