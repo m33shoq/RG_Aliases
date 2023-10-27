@@ -452,16 +452,16 @@ local function ResetRG_ALTS_DB()
 end
 
 local modules = {
-	["Blizzard"] = true,
-	["ShadowedUF"] = true,
+	["blizzard"] = true,
+	["shadoweduf"] = true,
 	-- ["Grid2"] = true,
 	-- ["ElvUI"] = true,
-	["VuhDo"] = true,
-	["KHM"] = true,
-	["ShestakUI"] = true,
-	["MRTNote"] = true,
-	["MRTCD"] = true,
-	["WeakAuras"] = true,
+	["vuhdo"] = true,
+	["khm"] = true,
+	["shestakui"] = true,
+	["mrtnote"] = true,
+	["mrtcd"] = true,
+	["weakauras"] = true,
 }
 local modulesString = [[
 
@@ -474,6 +474,14 @@ ShestakUI
 MRTNote
 MRTCD
 ]]
+local function modulesModernize(tbl)
+	local newtbl = {}
+	for k,v in pairs(tbl) do
+		newtbl[k:lower()] = v
+	end
+	tbl.v3 = true
+	return newtbl
+end
 
 local addon = CreateFrame("Frame")
 addon:RegisterEvent("ADDON_LOADED")
@@ -486,16 +494,16 @@ addon:SetScript("OnEvent", function(self,event, ...)
 	RG_ALTS_DB = _G.RG_ALTS_DB or CopyTable(RG_ALTS_DB_DEFAULT)
 	_G.RG_ALTS_DB = RG_ALTS_DB
 	RG_ALTS_SETTINGS = _G.RG_ALTS_SETTINGS or {
-		["Blizzard"] = false,
-		["ShadowedUF"] = false,
-		-- ["Grid2"] = false,
-		-- ["ElvUI"] = false,
-		["VuhDo"] = false,
-		["KHM"] = false,
-		["ShestakUI"] = false,
-		["MRTNote"] = false,
-		["MRTCD"] = false,
-		["WeakAuras"] = false,
+		["blizzard"] = false,
+		["shadoweduf"] = false,
+		-- ["grid2"] = false,
+		-- ["elvui"] = false,
+		["vuhdo"] = false,
+		["khm"] = false,
+		["shestakui"] = false,
+		["mrtnote"] = false,
+		["mrtcd"] = false,
+		["weakauras"] = false,
 	}
 	addonTable.RG_ALTS_DB = RG_ALTS_DB
 	for k,v in pairs(modules) do
@@ -526,6 +534,10 @@ addon:SetScript("OnEvent", function(self,event, ...)
 
 	if RG_ALTS_SETTINGS["MRTCD"] and addonTable.HookMRTCD then
 		addonTable.HookMRTCD()
+	end
+
+	if not RG_ALTS_SETTINGS.v3 then
+		RG_ALTS_SETTINGS = modulesModernize(RG_ALTS_SETTINGS)
 	end
 
 	self:UnregisterEvent("ADDON_LOADED")
@@ -578,8 +590,8 @@ local function handler(msg)
 		end
 	elseif arg1 == "disable" then
 		if arg2 then
-			if modules[arg2] then
-				RG_ALTS_SETTINGS[arg2] = false
+			if modules[arg2:lower()] then
+				RG_ALTS_SETTINGS[arg2:lower()] = false
 				print("|cffee5555[Rak Gaming Aliases]|r: Disabled", arg2)
 			else
 				print("|cffee5555[Rak Gaming Aliases]|r: No such module")
@@ -589,8 +601,8 @@ local function handler(msg)
 		end
 	elseif arg1 == "enable" then
 		if arg2 then
-			if modules[arg2] then
-				RG_ALTS_SETTINGS[arg2] = true
+			if modules[arg2:lower()] then
+				RG_ALTS_SETTINGS[arg2:lower()] = true
 				print("|cffee5555[Rak Gaming Aliases]|r: Enabled", arg2)
 			else
 				print("|cffee5555[Rak Gaming Aliases]|r: No such module")
