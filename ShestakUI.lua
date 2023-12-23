@@ -3,10 +3,8 @@ if not ShestakUI then return end
 addonName, addonTable = ...
 
 function addonTable.HookShestakUI()
-	print("|cffee5555[Rak Gaming Aliases]|r ShestakUI HOOKED")
 	local T = ShestakUI[1]
 	local Tags = ShestakUI.oUF and ShestakUI.oUF.Tags
-
 
 	Tags.Methods["NameArena"] = function(unit)
 		local name = RG_UnitName(unit) or UnitName(unit) or UNKNOWN
@@ -36,4 +34,5 @@ function addonTable.HookShestakUI()
 		end
 		return T.UTF(name, 18, false)
 	end
+	print("|cffee5555[Rak Gaming Aliases]|r ShestakUI HOOKED")
 end

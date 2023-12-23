@@ -1,5 +1,5 @@
 local addonName, addonTable = ...
-local IsAddOnLoaded = IsAddOnLoaded or C_AddOns.IsAddOnLoaded
+local IsAddOnLoaded = C_AddOns.IsAddOnLoaded or IsAddOnLoaded
 
 function addonTable.HookKHM()
 	if IsAddOnLoaded("KHMRaidFrames") then

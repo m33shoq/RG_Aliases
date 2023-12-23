@@ -1,3 +1,428 @@
+local GlobalAddonName, addonTable = ...
+
+local Comm = LibStub:GetLibrary("AceComm-3.0")
+local LibDeflate = LibStub:GetLibrary("LibDeflate")
+
+------------------------------------------------------------------------
+-- RG_ALTS_DB DEFAULTS
+------------------------------------------------------------------------
+--[[
+
+Список псевдонимов для чаров Рак Гейминга. Первое слово в строке - псевдоним, остальные - имена чаров.
+
+Изначально брал чаров из главной гильдейской таблицы.
+Если не хватает какого-то вашего альта, или думаете что чей-то псевдоним не подходит, то пишите сюда.
+	CHAT GPT REQUEST:
+
+I have a list of characters, first word in list is alias, other words are character names.
+I need a lua table formatted like this:
+Each character name must have separete entry in table.
+
+RG_ALTS_DB_DEFAULT = {
+	["characterName"] = alias,
+	["characterName"] = alias,
+	["characterName"] = alias,
+	["characterName"] = alias,
+	["characterName"] = alias,
+}
+]]
+local initText = [[
+Нерчо - Нерчодк Нерчо Нерчолинь Нерчоп Нерчохд Нерчодуду
+Рома - Ромачибрю Кринжелина Ромадесгрип Хедстронгхх Хедстронгх Крусадэс
+Володя - Сэнтенза Вовадезкойл Хантеротадоя Чыкъчырык
+Кали - Каллиго Калиприст Калитян Калишаман Калиэвокер
+Нимб - Нимбмейн Нимбэвокер Нимбальт Нимбтвинк Нимбшаман Нимбсд Нимбрестор Нимбпал Нимбшам
+Лайт - Лайтпалочка Драгонпупс Сашкастарфол Батлкрабс Крепкийтотем
+Ловес - Ловес Аншен Совела Шоквес Нидхогг Ловська
+Фейтя - Фейтясд Фейтя Фейтяхдд Фейтяоом Фейтякринж
+Омежа - Омежечкаа Омежадракон Омежаэвокер Омежасэнсэй Омежка Омежечка Омежечкачсв
+Муни - Dxbd Dxbwarr Dxbmage Mejrenp Эннуелр Эннуелдх Эннуелвар Эннуелмаг Эннуеле
+Змей - Змейняша Змейняшка Змейсекс Змейнуашо Змейзло Змейснайп Змейкраш Змеймвп
+Эмпрайз - Окриса Арурун Лайму Рунрун Сиаро Риккири
+Турба - Турбоглэйв Турбоклык Турбобёрн Турбошайн
+Анти - Антилокк Полэвокер Антии Антих Антиидот Антирад Антихх Антирейдж
+Пикви - Крошкапикви Аувета Япивандополо Крошкамагии Нигайки
+Авэ - Авэвокер Авэ Авэвафля Авэмун Авэстихий Авэрейдж
+Бадито - Батькито Друито Магито Эвокерито Чернокнижито Электрито Рогито
+Твин - Твиннблейд Твинфлекс Твинпипоклэп Твинбладж
+Фриран - Фриэвок Фрираан Фриранлк Фриранк
+Пауэл - Пауэл Килкомандер Лейонхэндс Рукадаггер Метеорбласт Дэзэнддикей Пятьдесять
+Дарклесс - Ракдвакдпс Графчпокало Пернатыйдуб Хисяко Левтрикдпс Брызгни
+Фейсмик - Фейсмикх Пошапкинс Фэйсмик Лёгфлесс Фейсмйк Фейсмик Фейсмикхх Фейсмикр
+Варсик - Варсикфейс Варсикус Роняюзапад Вэбзик Варсенуз Солеваяняшка Варсикдауби Варсек
+Кройфель - Кройфель Кройфёль Кроифёль Кроифель Папашкинз Триксгеймер Кроймонк Кройтик
+Синхх - Синххже Синхм Снхх Синххдх Синхп Синххводонос
+Селфлесс - Селфлессх Селфдк Селфмонк Всталфлесс Секамференс Селфпамп Вонючиймусор Селфпип
+Мишок - Мишокз Мишокэ Мишокдк Мишоксемпай Мишокбык
+Сквишех - Сквишех Сквишелол Сквише Метаесть Сквишехд Шипшейп
+Мэт - Мэтлокк Мэтдрэйк Ангратар Эгвэйн Мэткоутон Мэтх Мэталлика Мэтхх Мэтшок Юмэтбро
+Эндьюранс - Эндьюранс Эндьюрансшп Эндьюрансс Эндвокер Задозор Афрография Эндпамп
+]]
+
+
+-- local RG_ALTS_DB = nil
+
+local function convertToTable(selectedText)
+	local RG_ALTS_DB_DEFAULT = {}
+	for line in selectedText:gmatch("[^\r\n]+") do
+	  local alias, names = line:match("^(%S+)%s*-%s*(.+)$")
+	  if alias and names then
+		for name in names:gmatch("%S+") do
+		  RG_ALTS_DB_DEFAULT[name] = alias
+		end
+	  end
+	end
+	return RG_ALTS_DB_DEFAULT
+end
+
+RG_ALTS_DB_DEFAULT = convertToTable(initText)
+initText = nil
+
+local function RG_UnitName(unit)
+	local name, realm = UnitName(unit)
+	return RG_ALTS_DB[name] or name, realm
+end
+
+local function RG_ClassColorName(unit)
+	if unit and UnitExists(unit) then
+	  local name = RG_UnitName(unit)
+	  local _, class = UnitClass(unit)
+	  if not class then
+		return name
+	  else
+		local classData = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class]
+		local coloredName = ("|c%s%s|r"):format(classData.colorStr, name)
+		return coloredName
+	  end
+	else
+	  return "" -- ¯\_(ツ)_/¯
+	end
+  end
+
+_G.RG_UnitName = RG_UnitName
+_G.RG_ClassColorName = RG_ClassColorName
+
+addonTable.RG_UnitName = RG_UnitName
+addonTable.RG_ClassColorName = RG_ClassColorName
+------------------------------------------------------------------------
+-- COMMS
+------------------------------------------------------------------------
+
+local function SendAliasData()
+	local chatType = IsInRaid() and "RAID" or IsInGroup() and "PARTY"
+	if not chatType then
+		return
+	end
+	local dataTable = {}
+	for char, alias in pairs(RG_ALTS_DB) do
+		dataTable[alias] = dataTable[alias] or {}
+		tinsert(dataTable[alias], char)
+	end
+
+	local dataString = ""
+	for alias, chars in pairs(dataTable) do
+		dataString = dataString .. alias .. "^"
+		for _,char in pairs(chars) do
+			dataString = dataString .. char .. "^"
+		end
+		dataString = dataString:gsub("%^$","") .. "\n"
+	end
+
+	local compressed = LibDeflate:CompressDeflate(dataString,{level = 9})
+	local encoded = LibDeflate:EncodeForWoWAddonChannel(compressed)
+	if encoded then
+		Comm:SendCommMessage("RGAliasD", encoded, chatType, nil,"BULK",
+		function(arg1,arg2,arg3)
+			print(arg1,arg2,arg3)
+		end)
+	end
+end
+
+Comm:RegisterComm("RGAliasD", function(prefix, message, distribution, sender)
+	if distribution == "RAID" or distribution == "PARTY" then
+		local encoded = LibDeflate:DecodeForWoWAddonChannel(message)
+		local decompressed = LibDeflate:DecompressDeflate(encoded)
+
+		print("|cffee5555[Rak Gaming Aliases]|r Importing data from", sender)
+		local data = {strsplit("\n",decompressed)}
+		for i=1,#data do
+			local alias, names = strsplit("^",data[i],2)
+			if alias and names then
+				local chars = {strsplit("^",names)}
+				for j=1,#chars do
+					RG_ALTS_DB[chars[j]] = alias
+					-- print("Importing", chars[j], "as", alias)
+				end
+			end
+		end
+	end
+end)
+
+local function Request()
+	local chatType = IsInRaid() and "RAID" or IsInGroup() and "PARTY"
+	if not chatType then
+		return
+	end
+	Comm:SendCommMessage("RGAliasR", "Request", chatType)
+end
+
+Comm:RegisterComm("RGAliasR", function(prefix, message, distribution, sender)
+	if distribution == "RAID" or distribution == "PARTY" then
+		-- check permissions, only send data if player is group or raid leader
+		if UnitIsGroupLeader('player') then
+			SendAliasData()
+		end
+
+	end
+end)
+
+
+
+local function ResetRG_ALTS_DB()
+	RG_ALTS_DB = CopyTable(RG_ALTS_DB_DEFAULT)
+end
+
+local modules = {
+	["blizzard"] = true,
+	["shadoweduf"] = true,
+	-- ["Grid2"] = true,
+	-- ["ElvUI"] = true,
+	["vuhdo"] = true,
+	["khm"] = true,
+	["shestakui"] = true,
+	["mrtnote"] = true,
+	["mrtcd"] = true,
+	["weakauras"] = true,
+}
+local modulesString = [[
+
+modules:
+Blizzard
+ShadowedUF
+KHM
+VuhDo
+ShestakUI
+MRTNote
+MRTCD
+]]
+local function modulesModernize(tbl)
+	local newtbl = {}
+	for k,v in pairs(tbl) do
+		newtbl[k:lower()] = v
+	end
+	tbl.v3 = true
+	return newtbl
+end
+
+local addon = CreateFrame("Frame")
+addon:RegisterEvent("ADDON_LOADED")
+addon:SetScript("OnEvent", function(self,event, ...)
+	local addonName = ...
+	if addonName ~= GlobalAddonName then
+		return
+	end
+	print("|cffee5555[Rak Gaming Aliases]|r: Ready")
+	RG_ALTS_DB = _G.RG_ALTS_DB or CopyTable(RG_ALTS_DB_DEFAULT)
+	_G.RG_ALTS_DB = RG_ALTS_DB
+	RG_ALTS_SETTINGS = _G.RG_ALTS_SETTINGS or {
+		["blizzard"] = false,
+		["shadoweduf"] = false,
+		-- ["grid2"] = false,
+		-- ["elvui"] = false,
+		["vuhdo"] = false,
+		["khm"] = false,
+		["shestakui"] = false,
+		["mrtnote"] = false,
+		["mrtcd"] = false,
+		["weakauras"] = false,
+	}
+	addonTable.RG_ALTS_DB = RG_ALTS_DB
+	for k,v in pairs(modules) do
+		if v == nil then
+			RG_ALTS_SETTINGS[k] = false
+		end
+	end
+
+	if RG_ALTS_SETTINGS["shadoweduf"] and addonTable.HookSUF then
+		addonTable.HookSUF()
+	end
+
+	if RG_ALTS_SETTINGS["blizzard"] and addonTable.HookBlizzard then
+		addonTable.HookBlizzard()
+	end
+
+	if RG_ALTS_SETTINGS["khm"] and addonTable.HookKHM then
+		addonTable.HookKHM()
+	end
+
+	if RG_ALTS_SETTINGS["shestakui"] and addonTable.HookShestakUI then
+		addonTable.HookShestakUI()
+	end
+
+	if RG_ALTS_SETTINGS["mrtnote"] and addonTable.HookMRTNote then
+		addonTable.HookMRTNote()
+	end
+
+	if RG_ALTS_SETTINGS["mrtcd"] and addonTable.HookMRTCD then
+		addonTable.HookMRTCD()
+	end
+
+	if not RG_ALTS_SETTINGS.v3 then
+		RG_ALTS_SETTINGS = modulesModernize(RG_ALTS_SETTINGS)
+	end
+
+	self:UnregisterEvent("ADDON_LOADED")
+end)
+
+------------------------------------------------------------------------
+-- SLASH COMMANDS
+------------------------------------------------------------------------
+string_gmatch = string.gmatch
+SLASH_RG_ALIAS1 = "/rgalias"
+
+
+local function handler(msg)
+	local arg1, arg2, arg3
+	for word in string_gmatch(msg, "[^ ]+") do
+		if not arg1 then
+			arg1 = word:lower()
+		elseif not arg2 then
+			arg2 = word
+		elseif not arg3 then
+			arg3 = word
+		end
+	end
+	if arg1 == "default" then
+		ResetRG_ALTS_DB()
+		print("|cffee5555[Rak Gaming Aliases]|r: Reseted Alts Database to Default")
+	elseif arg1 == "request" then
+		Request()
+		print("|cffee5555[Rak Gaming Aliases]|r: Requesting")
+	elseif arg1 == "send" then
+		SendAliasData()
+		print("|cffee5555[Rak Gaming Aliases]|r: Sending")
+	elseif arg1 == "add" then
+		if arg2 and arg3 then
+			RG_ALTS_DB[arg2] = arg3
+			print("|cffee5555[Rak Gaming Aliases]|r: Added", arg2, "as", arg3)
+		else
+			print("|cffee5555[Rak Gaming Aliases]|r:|cff80ff00 /rgalias add <name> <alias>|r")
+		end
+	elseif arg1 == "remove" then
+		if arg2 then
+			RG_ALTS_DB[arg2] = nil
+			print("|cffee5555[Rak Gaming Aliases]|r: Removed", arg2)
+		else
+			print("|cffee5555[Rak Gaming Aliases]|r:|cff80ff00 /rgalias remove <name>|r")
+		end
+	elseif arg1 == "get" then
+		if arg2 then
+			print(RG_ALTS_DB[arg2] and ("|cffee5555[Rak Gaming Aliases]|r:" .. RG_ALTS_DB[arg2]) or ("|cffee5555[Rak Gaming Aliases]|r: No alias for " .. arg2))
+		end
+	elseif arg1 == "disable" then
+		if arg2 then
+			if modules[arg2:lower()] then
+				RG_ALTS_SETTINGS[arg2:lower()] = false
+				print("|cffee5555[Rak Gaming Aliases]|r: Disabled", arg2)
+			else
+				print("|cffee5555[Rak Gaming Aliases]|r: No such module")
+			end
+		else
+			print("|cffee5555[Rak Gaming Aliases]|r:|cff80ff00 /rgalias disable <module>|r" .. modulesString)
+		end
+	elseif arg1 == "enable" then
+		if arg2 then
+			if modules[arg2:lower()] then
+				RG_ALTS_SETTINGS[arg2:lower()] = true
+				print("|cffee5555[Rak Gaming Aliases]|r: Enabled", arg2)
+			else
+				print("|cffee5555[Rak Gaming Aliases]|r: No such module")
+			end
+		else
+			print("|cffee5555[Rak Gaming Aliases]|r:|cff80ff00 /rgalias enable <module>|r" .. modulesString)
+		end
+	elseif arg1 == "status" then
+		print("|cffee5555[Rak Gaming Aliases]|r: modules settings:")
+		for k,v in pairs(RG_ALTS_SETTINGS) do
+			print(k,v and "Enabled" or "Disabled")
+		end
+	else
+		print("|cffee5555[Rak Gaming Aliases]|r:\n|cff80ff00/rgalias default \n/rgalias request \n/rgalias send \n/rgalias add <name1> <alias> \n/rgalias enable <module>\n/rgalias disable <module>\n/rgalias status|r")
+	end
+end
+SlashCmdList["RG_ALIAS"] = handler
+
+--[[
+# Rak Gaming Aliases GUIDELINES
+## ElvUI
+В ElvUI нужно выставить новые теги там где хотите видеть псевдонимы вместо ников.
+
+1. Заходим в ElvUI -> Рамки юнитов -> Одиночные/Груповые юниты -> Выбираем нужный фрейм(например Рейд 1).
+2. Находим нужную вкладку с тектом, обычно это или "Имя" или "Свой текст".
+3. Заменяем старый тег на новый.
+В основном нужно заменить "name" на "nameRG", например [name:short] -> [nameRG:short]
+Полный список новых тегов можно посмотреть во вкладке "Доступные теги" - Rak Gaming Health/Names/Target
+
+Повторить для всех фреймов, которые нужно изменить.
+## Shadowed Unit Frames
+В SUF нужно выставить новые теги там где хотите видеть псевдонимы вместо ников.
+
+1. SUF -> нужный фрейм -> Текст/Теги
+2. Находим поле где у вас было [name] или [( )name] или что-то в таком стиле.
+3. Заменяем
+	либо через интерфейс тагов: пролистать вниз, снять галочку с "Имя объекта" и
+	поставить на "RG Alias" или RG Alias(Class colored)
+
+	либо вручную: [( )name] -> [( )RG_Name] или [( )RG_Name_ClassColored]
+
+Повторить для всех фреймов, которые нужно изменить.
+
+При создании нового профиля в SUF, таги появиться только после /reload
+## Blizzard(только рейдфреймы)
+Для включения/выключения использовать:
+/rgalias enable Blizzard
+/rgalias disable Blizzard
+
+## VuhDo
+Для работы с вуду нужно поставить отедльную версию VuhDo.
+
+Для включения/выключения использовать:
+/rgalias enable VuhDo
+/rgalias disable VuhDo
+## KHM
+Работает только если в KHM включено изменение имен на фреймах. В остальных случаях использовать Blizzard.
+
+Для включения/выключения использовать:
+/rgalias enable KHM
+/rgalias disable KHM
+## Grid2
+1. /grid2 -> Индикаторы
+2. Находим индикатор к которому прикреплено состояние "название", выключаем его
+3. Внизу находим состояние Rak Gaming Alias, включаем его
+4. Убедиться что состояние Rak Gaming Alias находится выше других состояний по приоритету
+## ShestakUI(только рейдфреймы вроде...) ¯\_(ツ)_/¯
+Для включения/выключения использовать:
+/rgalias enable ShestakUI
+/rgalias disable ShestakUI
+
+***После использования комманд /rgalias enable/disable нужно перезапустить интерфейс что бы изменения вступили в силу.***
+## MRT Рейд кулдауны
+Для включения/выключения использовать:
+/rgalias enable MRTCD
+/rgalias disable MRTCD
+
+***После использования комманд /rgalias enable/disable нужно перезапустить интерфейс что бы изменения вступили в силу.***
+## MRT Заметка(только визуал, хз зачем сделал но пусть будет)
+Для включения/выключения использовать:
+/rgalias enable MRTNote
+/rgalias disable MRTNote
+
+***После использования комманд /rgalias enable/disable нужно перезапустить интерфейс что бы изменения вступили в силу.***
+]]
+
+
+
+
 --[[
 DEV COMMENTS
 
@@ -62,80 +487,11 @@ probably the most important
 
 			end)
 	end
----------------------
-
-
-If there is a numbers in list delete them. Remove redunant spaces.
+------------------------------------------------------------------------
 
 ]]
 
-local GlobalAddonName, addonTable = ...
-
-local Comm = LibStub:GetLibrary("AceComm-3.0")
-local LibDeflate = LibStub:GetLibrary("LibDeflate")
-
-------------------------------------------------------------------------
--- RG_ALTS_DB DEFAULTS
-------------------------------------------------------------------------
---[[
-
-Список псевдонимов для чаров Рак Гейминга. Первое слово в строке - псевдоним, остальные - имена чаров.
-
-Изначально брал чаров из главной гильдейской таблицы.
-Если не хватает какого-то вашего альта, или думаете что чей-то псевдоним не подходит, то пишите сюда.
-	CHAT GPT REQUEST:
-
-I have a list of characters, first word in list is alias, other words are character names.
-I need a lua table formatted like this:
-Each character name must have separete entry in table.
-
-RG_ALTS_DB_DEFAULT = {
-	["characterName"] = alias,
-	["characterName"] = alias,
-	["characterName"] = alias,
-	["characterName"] = alias,
-	["characterName"] = alias,
-}
-
-Нерчо - Нерчодк Нерчо Нерчолинь Нерчоп Нерчохд Нерчодуду
-Рома - Ромачибрю Кринжелина Ромадесгрип Хедстронгхх Хедстронгх Крусадэс
-Володя - Сэнтенза Вовадезкойл Хантеротадоя Чыкъчырык
-Кали - Каллиго Калиприст Калитян Калишаман Калиэвокер
-Нимб - Нимбмейн Нимбэвокер Нимбальт Нимбтвинк Нимбшаман Нимбсд Нимбрестор Нимбпал Нимбшам
-Лайт - Лайтпалочка Драгонпупс Сашкастарфол Батлкрабс Крепкийтотем
-Ловес - Ловес Аншен Совела Шоквес Нидхогг Ловська
-Фейтя - Фейтясд Фейтя Фейтяхдд Фейтяоом Фейтякринж
-Омежа - Омежечкаа Омежадракон Омежаэвокер Омежасэнсэй Омежка Омежечка Омежечкачсв
-Муни - Dxbd Dxbwarr Dxbmage Mejrenp
-Змей - Змейняша Змейняшка Змейсекс Змейнуашо Змейзло Змейснайп Змейкраш Змеймвп
-Эмпрайз - Окриса Арурун Лайму Рунрун Сиаро Риккири
-Турба - Турбоглэйв Турбоклык Турбобёрн Турбошайн
-Анти - Антилокк Полэвокер Антии Антих Антиидот Антирад
-Пикви - Крошкапикви Аувета Япивандополо Крошкамагии Нигайки
-Авэ - Авэвокер Авэ Авэвафля Авэмун Авэстихий Авэрейдж
-Бадито - Батькито Друито Магито Эвокерито Чернокнижито Электрито Рогито
-Твин - Твиннблейд Твинфлекс Твинпипоклэп Твинбладж
-Фриран - Фриэвок Фрираан Фриранлк Фриранк
-Пауэл - Пауэл Килкомандер Лейонхэндс Рукадаггер Метеорбласт Дэзэнддикей Пятьдесять
-Дарклесс - Ракдвакдпс Графчпокало Пернатыйдуб Хисяко Левтрикдпс Брызгни
-Фейсмик - Фейсмикх Пошапкинс Фэйсмик Лёгфлесс Фейсмйк Фейсмик Фейсмикхх
-Варсик - Варсикфейс Варсикус Роняюзапад Вэбзик Варсенуз Солеваяняшка Варсикдауби
-Кройфель - Кройфель Кройфёль Кроифёль Кроифель Папашкинз Триксгеймер Кроймонк
-Синхх - Синххже Синхм Снхх Синххдх Синхп Синххводонос
-Селфлесс - Селфлессх Селфдк Селфмонк Всталфлесс Секамференс Селфпамп Вонючиймусор
-Мишок - Мишокз Мишокэ Мишокдк Мишоксемпай Мишокбык
-Сквишех - Сквишех Сквишелол Сквише Метаесть Сквишехд Шипшейп
-Мэт - Мэтлокк Мэтдрэйк Ангратар Эгвэйн Мэткоутон Мэтх Мэталлика Мэтхх Мэтшок
-Эндьюранс - Эндьюранс Эндьюрансшп Эндьюрансс Эндвокер Задозор Афрография
-
-
-REMOVED
-Смородина - Смородинкао Смородинуа Смородиная Смородиновая Смородинкова Смородька Смородинайа
-]]
-
--- local RG_ALTS_DB = nil
-
-RG_ALTS_DB_DEFAULT = {
+--[[{
     ["Нерчодк"] = "Нерчо",
     ["Нерчо"] = "Нерчо",
     ["Нерчолинь"] = "Нерчо",
@@ -346,350 +702,4 @@ RG_ALTS_DB_DEFAULT = {
     ["Задозор"] = "Эндьюранс",
     ["Афрография"] = "Эндьюранс",
 }
-
-local function RG_UnitName(unit)
-	local name, realm = UnitName(unit)
-	return RG_ALTS_DB[name] or name, realm
-end
-
-local function RG_ClassColorName(unit)
-	if unit and UnitExists(unit) then
-	  local name = RG_UnitName(unit)
-	  local _, class = UnitClass(unit)
-	  if not class then
-		return name
-	  else
-		local classData = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class]
-		local coloredName = ("|c%s%s|r"):format(classData.colorStr, name)
-		return coloredName
-	  end
-	else
-	  return "" -- ¯\_(ツ)_/¯
-	end
-  end
-
-_G.RG_UnitName = RG_UnitName
-_G.RG_ClassColorName = RG_ClassColorName
-
-addonTable.RG_UnitName = RG_UnitName
-addonTable.RG_ClassColorName = RG_ClassColorName
-------------------------------------------------------------------------
--- COMMS
-------------------------------------------------------------------------
-
-local function SendAliasData()
-	local chatType = IsInRaid() and "RAID" or IsInGroup() and "PARTY"
-	if not chatType then
-		return
-	end
-	local dataTable = {}
-	for char, alias in pairs(RG_ALTS_DB) do
-		dataTable[alias] = dataTable[alias] or {}
-		tinsert(dataTable[alias], char)
-	end
-
-	local dataString = ""
-	for alias, chars in pairs(dataTable) do
-		dataString = dataString .. alias .. "^"
-		for _,char in pairs(chars) do
-			dataString = dataString .. char .. "^"
-		end
-		dataString = dataString:gsub("%^$","") .. "\n"
-	end
-
-	local compressed = LibDeflate:CompressDeflate(dataString,{level = 9})
-	local encoded = LibDeflate:EncodeForWoWAddonChannel(compressed)
-	if encoded then
-		Comm:SendCommMessage("RGAliasD", encoded, chatType, nil,"BULK",
-		function(arg1,arg2,arg3)
-			print(arg1,arg2,arg3)
-		end)
-	end
-end
-
-Comm:RegisterComm("RGAliasD", function(prefix, message, distribution, sender)
-	if distribution == "RAID" or distribution == "PARTY" then
-		local encoded = LibDeflate:DecodeForWoWAddonChannel(message)
-		local decompressed = LibDeflate:DecompressDeflate(encoded)
-
-		print("|cffee5555[Rak Gaming Aliases]|r Importing data from", sender)
-		local data = {strsplit("\n",decompressed)}
-		for i=1,#data do
-			local alias, names = strsplit("^",data[i],2)
-			if alias and names then
-				local chars = {strsplit("^",names)}
-				for j=1,#chars do
-					RG_ALTS_DB[chars[j]] = alias
-					-- print("Importing", chars[j], "as", alias)
-				end
-			end
-		end
-	end
-end)
-
-local function Request()
-	local chatType = IsInRaid() and "RAID" or IsInGroup() and "PARTY"
-	if not chatType then
-		return
-	end
-	Comm:SendCommMessage("RGAliasR", "Request", chatType)
-end
-
-Comm:RegisterComm("RGAliasR", function(prefix, message, distribution, sender)
-	if distribution == "RAID" or distribution == "PARTY" then
-		-- check permissions, only send data if player is group or raid leader
-		if UnitIsGroupLeader('player') then
-			SendAliasData()
-		end
-
-	end
-end)
-
-
-
-local function ResetRG_ALTS_DB()
-	RG_ALTS_DB = CopyTable(RG_ALTS_DB_DEFAULT)
-end
-
-local modules = {
-	["blizzard"] = true,
-	["shadoweduf"] = true,
-	-- ["Grid2"] = true,
-	-- ["ElvUI"] = true,
-	["vuhdo"] = true,
-	["khm"] = true,
-	["shestakui"] = true,
-	["mrtnote"] = true,
-	["mrtcd"] = true,
-	["weakauras"] = true,
-}
-local modulesString = [[
-
-modules:
-Blizzard
-ShadowedUF
-KHM
-VuhDo
-ShestakUI
-MRTNote
-MRTCD
-]]
-local function modulesModernize(tbl)
-	local newtbl = {}
-	for k,v in pairs(tbl) do
-		newtbl[k:lower()] = v
-	end
-	tbl.v3 = true
-	return newtbl
-end
-
-local addon = CreateFrame("Frame")
-addon:RegisterEvent("ADDON_LOADED")
-addon:SetScript("OnEvent", function(self,event, ...)
-	local addonName = ...
-	if addonName ~= GlobalAddonName then
-		return
-	end
-	print("|cffee5555[Rak Gaming Aliases]|r: Ready")
-	RG_ALTS_DB = _G.RG_ALTS_DB or CopyTable(RG_ALTS_DB_DEFAULT)
-	_G.RG_ALTS_DB = RG_ALTS_DB
-	RG_ALTS_SETTINGS = _G.RG_ALTS_SETTINGS or {
-		["blizzard"] = false,
-		["shadoweduf"] = false,
-		-- ["grid2"] = false,
-		-- ["elvui"] = false,
-		["vuhdo"] = false,
-		["khm"] = false,
-		["shestakui"] = false,
-		["mrtnote"] = false,
-		["mrtcd"] = false,
-		["weakauras"] = false,
-	}
-	addonTable.RG_ALTS_DB = RG_ALTS_DB
-	for k,v in pairs(modules) do
-		if RG_ALTS_SETTINGS[k] == nil then
-			RG_ALTS_SETTINGS[k] = false
-		end
-	end
-
-	if RG_ALTS_SETTINGS["shadoweduf"] and addonTable.HookSUF then
-		addonTable.HookSUF()
-	end
-
-	if RG_ALTS_SETTINGS["blizzard"] and addonTable.HookBlizzard then
-		addonTable.HookBlizzard()
-	end
-
-	if RG_ALTS_SETTINGS["khm"] and addonTable.HookKHM then
-		addonTable.HookKHM()
-	end
-
-	if RG_ALTS_SETTINGS["shestakui"] and addonTable.HookShestakUI then
-		addonTable.HookShestakUI()
-	end
-
-	if RG_ALTS_SETTINGS["mrtnote"] and addonTable.HookMRTNote then
-		addonTable.HookMRTNote()
-	end
-
-	if RG_ALTS_SETTINGS["mrtcd"] and addonTable.HookMRTCD then
-		addonTable.HookMRTCD()
-	end
-
-	if not RG_ALTS_SETTINGS.v3 then
-		RG_ALTS_SETTINGS = modulesModernize(RG_ALTS_SETTINGS)
-	end
-
-	self:UnregisterEvent("ADDON_LOADED")
-end)
-
-------------------------------------------------------------------------
--- SLASH COMMANDS
-------------------------------------------------------------------------
-string_gmatch = string.gmatch
-SLASH_RG_ALIAS1 = "/rgalias"
-
-
-local function handler(msg)
-	local arg1, arg2, arg3
-	for word in string_gmatch(msg, "[^ ]+") do
-		if not arg1 then
-			arg1 = word:lower()
-		elseif not arg2 then
-			arg2 = word
-		elseif not arg3 then
-			arg3 = word
-		end
-	end
-	if arg1 == "default" then
-		ResetRG_ALTS_DB()
-		print("|cffee5555[Rak Gaming Aliases]|r: Reseted Alts Database to Default")
-	elseif arg1 == "request" then
-		Request()
-		print("|cffee5555[Rak Gaming Aliases]|r: Requesting")
-	elseif arg1 == "send" then
-		SendAliasData()
-		print("|cffee5555[Rak Gaming Aliases]|r: Sending")
-	elseif arg1 == "add" then
-		if arg2 and arg3 then
-			RG_ALTS_DB[arg2] = arg3
-			print("|cffee5555[Rak Gaming Aliases]|r: Added", arg2, "as", arg3)
-		else
-			print("|cffee5555[Rak Gaming Aliases]|r:|cff80ff00 /rgalias add <name> <alias>|r")
-		end
-	elseif arg1 == "remove" then
-		if arg2 then
-			RG_ALTS_DB[arg2] = nil
-			print("|cffee5555[Rak Gaming Aliases]|r: Removed", arg2)
-		else
-			print("|cffee5555[Rak Gaming Aliases]|r:|cff80ff00 /rgalias remove <name>|r")
-		end
-	elseif arg1 == "get" then
-		if arg2 then
-			print(RG_ALTS_DB[arg2] and ("|cffee5555[Rak Gaming Aliases]|r:" .. RG_ALTS_DB[arg2]) or ("|cffee5555[Rak Gaming Aliases]|r: No alias for " .. arg2))
-		end
-	elseif arg1 == "disable" then
-		if arg2 then
-			if modules[arg2:lower()] then
-				RG_ALTS_SETTINGS[arg2:lower()] = false
-				print("|cffee5555[Rak Gaming Aliases]|r: Disabled", arg2)
-			else
-				print("|cffee5555[Rak Gaming Aliases]|r: No such module")
-			end
-		else
-			print("|cffee5555[Rak Gaming Aliases]|r:|cff80ff00 /rgalias disable <module>|r" .. modulesString)
-		end
-	elseif arg1 == "enable" then
-		if arg2 then
-			if modules[arg2:lower()] then
-				RG_ALTS_SETTINGS[arg2:lower()] = true
-				print("|cffee5555[Rak Gaming Aliases]|r: Enabled", arg2)
-			else
-				print("|cffee5555[Rak Gaming Aliases]|r: No such module")
-			end
-		else
-			print("|cffee5555[Rak Gaming Aliases]|r:|cff80ff00 /rgalias enable <module>|r" .. modulesString)
-		end
-	elseif arg1 == "status" then
-		print("|cffee5555[Rak Gaming Aliases]|r: modules settings:")
-		for k,v in pairs(RG_ALTS_SETTINGS) do
-			print(k,v and "Enabled" or "Disabled")
-		end
-	else
-		print("|cffee5555[Rak Gaming Aliases]|r:\n|cff80ff00/rgalias default \n/rgalias request \n/rgalias send \n/rgalias add <name1> <alias> \n/rgalias enable <module>\n/rgalias disable <module>\n/rgalias status|r")
-	end
-end
-SlashCmdList["RG_ALIAS"] = handler
-
---[[
-# Rak Gaming Aliases GUIDELINES
-## ElvUI
-В ElvUI нужно выставить новые теги там где хотите видеть псевдонимы вместо ников.
-
-1. Заходим в ElvUI -> Рамки юнитов -> Одиночные/Груповые юниты -> Выбираем нужный фрейм(например Рейд 1).
-2. Находим нужную вкладку с тектом, обычно это или "Имя" или "Свой текст".
-3. Заменяем старый тег на новый.
-В основном нужно заменить "name" на "nameRG", например [name:short] -> [nameRG:short]
-Полный список новых тегов можно посмотреть во вкладке "Доступные теги" - Rak Gaming Health/Names/Target
-
-Повторить для всех фреймов, которые нужно изменить.
-## Shadowed Unit Frames
-В SUF нужно выставить новые теги там где хотите видеть псевдонимы вместо ников.
-
-1. SUF -> нужный фрейм -> Текст/Теги
-2. Находим поле где у вас было [name] или [( )name] или что-то в таком стиле.
-3. Заменяем
-	либо через интерфейс тагов: пролистать вниз, снять галочку с "Имя объекта" и
-	поставить на "RG Alias" или RG Alias(Class colored)
-
-	либо вручную: [( )name] -> [( )RG_Name] или [( )RG_Name_ClassColored]
-
-Повторить для всех фреймов, которые нужно изменить.
-
-При создании нового профиля в SUF, таги появиться только после /reload
-## Blizzard(только рейдфреймы)
-Для включения/выключения использовать:
-/rgalias enable Blizzard
-/rgalias disable Blizzard
-
-### Известные проблемы
-Хук близовских рейдфреймов может иногда вызывать ошибку
-```
-Модификация 'RG_Aliases' пыталась вызвать защищенную функцию 'CompactRaidGroup4Member4:SetSize()'.
-```
-## VuhDo
-Для работы с вуду нужно поставить отедльную версию VuhDo.
-
-Для включения/выключения использовать:
-/rgalias enable VuhDo
-/rgalias disable VuhDo
-## KHM
-Работает только если в KHM включено изменение имен на фреймах. В остальных случаях использовать Blizzard.
-
-Для включения/выключения использовать:
-/rgalias enable KHM
-/rgalias disable KHM
-## Grid2
-1. /grid2 -> Индикаторы
-2. Находим индикатор к которому прикреплено состояние "название", выключаем его
-3. Внизу находим состояние Rak Gaming Alias, включаем его
-4. Убедиться что состояние Rak Gaming Alias находится выше других состояний по приоритету
-## ShestakUI(только рейдфреймы вроде...) ¯\_(ツ)_/¯
-Для включения/выключения использовать:
-/rgalias enable ShestakUI
-/rgalias disable ShestakUI
-
-***После использования комманд /rgalias enable/disable нужно перезапустить интерфейс что бы изменения вступили в силу.***
-## MRT Рейд кулдауны
-Для включения/выключения использовать:
-/rgalias enable MRTCD
-/rgalias disable MRTCD
-
-***После использования комманд /rgalias enable/disable нужно перезапустить интерфейс что бы изменения вступили в силу.***
-## MRT Заметка(только визуал, хз зачем сделал но пусть будет)
-Для включения/выключения использовать:
-/rgalias enable MRTNote
-/rgalias disable MRTNote
-
-***После использования комманд /rgalias enable/disable нужно перезапустить интерфейс что бы изменения вступили в силу.***
 ]]
