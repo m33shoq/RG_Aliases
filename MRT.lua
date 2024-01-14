@@ -28,7 +28,7 @@ local function RaidCooldowns_Bar_TextName(eventName,bar,gsub_data,barData)
 	end
 end
 addonTable.HookMRTCD = function()
-	print("|cffee5555[Rak Gaming Aliases]|r MRT CD HOOKED")
+	-- print("|cffee5555[Rak Gaming Aliases]|r MRT CD HOOKED")
 	GMRT.F:RegisterCallback("RaidCooldowns_Bar_TextName", RaidCooldowns_Bar_TextName)
 end
 
@@ -54,6 +54,6 @@ local function Note_UpdateText(eventName,noteFrame)
 end
 
 addonTable.HookMRTNote = function()
-	print("|cffee5555[Rak Gaming Aliases]|r MRT Note HOOKED")
+	-- print("|cffee5555[Rak Gaming Aliases]|r MRT Note HOOKED")
 	GMRT.F:RegisterCallback("Note_UpdateText", Note_UpdateText)
 end

@@ -9,7 +9,7 @@ local function UpdateNameOverride(self)
 end
 
 function addonTable.HookBlizzard()
-	print("|cffee5555[Rak Gaming Aliases]|r Blizzard frames HOOKED")
+	-- print("|cffee5555[Rak Gaming Aliases]|r Blizzard frames HOOKED")
 	hooksecurefunc("CompactUnitFrame_UpdateName",function(frame)
 		if frame and not frame:IsForbidden() then
 			local frame_name = frame:GetName()

@@ -54,7 +54,12 @@
 		"ShestakUI",
 		"CUSTOM_CLASS_COLORS",
 		"UnitClass",
-		"RAID_CLASS_COLORS"
+		"RAID_CLASS_COLORS",
+		"ItemRefTooltip",
+		"StaticPopup_Hide",
+		"StaticPopupDialogs",
+		"StaticPopup_Show",
+		"ReloadUI"
 	],
     "Lua.diagnostics.disable": [
 		"lowercase-global",

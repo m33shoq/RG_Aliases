@@ -5,7 +5,7 @@ function addonTable.HookKHM()
 	if IsAddOnLoaded("KHMRaidFrames") then
 		local KHMRaidFrames = LibStub("AceAddon-3.0"):GetAddon("KHMRaidFrames")
 		local RG_UnitName = addonTable.RG_UnitName
-		print("|cffee5555[Rak Gaming Aliases]|r KHM HOOKED")
+		-- print("|cffee5555[Rak Gaming Aliases]|r KHM HOOKED")
 		function KHMRaidFrames.SetUpNameInternal(frame, groupType)
 			if not frame.name then return end
 

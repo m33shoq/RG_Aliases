@@ -15,12 +15,12 @@ function addonTable.HookSUF()
 	f:RegisterEvent("ADDON_LOADED")
 	f:SetScript("OnEvent", function(self, event, addon)
 		if addon == "ShadowedUF_Options" then --/suf
-			print("|cffee5555[Rak Gaming Aliases]|r SUF TAGS UPDATED")
+			-- print("|cffee5555[Rak Gaming Aliases]|r SUF TAGS UPDATED")
 			local ShadowUF = _G.ShadowUF
 			if not ShadowUF then return end
 			ShadowUF.db.profile.tags["RG_Name"] = {
 				["func"] = [[function(unit, unitOwner)
-					return RG_UnitName and RG_UnitName(unitOwner) or UnitName(unitOwner) or UNKNOWN 
+					return RG_UnitName and RG_UnitName(unitOwner) or UnitName(unitOwner) or UNKNOWN
 				end]],
 				["events"] = "UNIT_NAME_UPDATE",
 				["name"] = "RG Alias",

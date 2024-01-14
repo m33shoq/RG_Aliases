@@ -34,5 +34,5 @@ function addonTable.HookShestakUI()
 		end
 		return T.UTF(name, 18, false)
 	end
-	print("|cffee5555[Rak Gaming Aliases]|r ShestakUI HOOKED")
+	-- print("|cffee5555[Rak Gaming Aliases]|r ShestakUI HOOKED")
 end

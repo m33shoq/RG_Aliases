@@ -2,7 +2,7 @@ local ElvUI = _G.ElvUI
 if not ElvUI then
 	return
 end
-print("|cffee5555[Rak Gaming Aliases]|r ElvUI TAGS LOADED")
+-- print("|cffee5555[Rak Gaming Aliases]|r ElvUI TAGS LOADED")
 local E, L = unpack(ElvUI)
 
 local Translit = E.Libs.Translit

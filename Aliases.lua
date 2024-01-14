@@ -28,10 +28,10 @@ RG_ALTS_DB_DEFAULT = {
 ]]
 local initText = [[
 Нерчо - Нерчодк Нерчо Нерчолинь Нерчоп Нерчохд Нерчодуду
-Рома - Ромачибрю Кринжелина Ромадесгрип Хедстронгхх Хедстронгх Крусадэс
+Рома - Ромачибрю Кринжелина Ромадесгрип Хедстронгхх Хедстронгх Крусадэс Крусадесх
 Володя - Сэнтенза Вовадезкойл Хантеротадоя Чыкъчырык
 Кали - Каллиго Калиприст Калитян Калишаман Калиэвокер
-Нимб - Нимбмейн Нимбэвокер Нимбальт Нимбтвинк Нимбшаман Нимбсд Нимбрестор Нимбпал Нимбшам
+Нимб - Нимбмейн Нимбэвокер Нимбальт Нимбтвинк Нимбшаман Нимбсд Нимбрестор Нимбпал Нимбшам Нимбмэйн Нимбхил
 Лайт - Лайтпалочка Драгонпупс Сашкастарфол Батлкрабс Крепкийтотем
 Ловес - Ловес Аншен Совела Шоквес Нидхогг Ловська
 Фейтя - Фейтясд Фейтя Фейтяхдд Фейтяоом Фейтякринж
@@ -44,7 +44,6 @@ local initText = [[
 Пикви - Крошкапикви Аувета Япивандополо Крошкамагии Нигайки
 Авэ - Авэвокер Авэ Авэвафля Авэмун Авэстихий Авэрейдж
 Бадито - Батькито Друито Магито Эвокерито Чернокнижито Электрито Рогито
-Твин - Твиннблейд Твинфлекс Твинпипоклэп Твинбладж
 Фриран - Фриэвок Фрираан Фриранлк Фриранк
 Пауэл - Пауэл Килкомандер Лейонхэндс Рукадаггер Метеорбласт Дэзэнддикей Пятьдесять
 Дарклесс - Ракдвакдпс Графчпокало Пернатыйдуб Хисяко Левтрикдпс Брызгни
@@ -59,6 +58,7 @@ local initText = [[
 Эндьюранс - Эндьюранс Эндьюрансшп Эндьюрансс Эндвокер Задозор Афрография Эндпамп
 ]]
 
+-- Твин - Твиннблейд Твинфлекс Твинпипоклэп Твинбладж
 
 -- local RG_ALTS_DB = nil
 
@@ -75,8 +75,10 @@ local function convertToTable(selectedText)
 	return RG_ALTS_DB_DEFAULT
 end
 
-RG_ALTS_DB_DEFAULT = convertToTable(initText)
-initText = nil
+local function GetRGDefault()
+	return convertToTable(initText)
+end
+
 
 local function RG_UnitName(unit)
 	local name, realm = UnitName(unit)
@@ -179,7 +181,8 @@ end)
 
 
 local function ResetRG_ALTS_DB()
-	RG_ALTS_DB = CopyTable(RG_ALTS_DB_DEFAULT)
+	RG_ALTS_DB = GetRGDefault()
+	_G.RG_ALTS_DB = RG_ALTS_DB
 end
 
 local modules = {
@@ -222,13 +225,11 @@ addon:SetScript("OnEvent", function(self,event, ...)
 		return
 	end
 	print("|cffee5555[Rak Gaming Aliases]|r: Ready")
-	RG_ALTS_DB = _G.RG_ALTS_DB or CopyTable(RG_ALTS_DB_DEFAULT)
+	RG_ALTS_DB = _G.RG_ALTS_DB or GetRGDefault()
 	_G.RG_ALTS_DB = RG_ALTS_DB
 	RG_ALTS_SETTINGS = _G.RG_ALTS_SETTINGS or {
 		["blizzard"] = false,
 		["shadoweduf"] = false,
-		-- ["grid2"] = false,
-		-- ["elvui"] = false,
 		["vuhdo"] = false,
 		["khm"] = false,
 		["shestakui"] = false,
@@ -278,8 +279,6 @@ end)
 -- SLASH COMMANDS
 ------------------------------------------------------------------------
 string_gmatch = string.gmatch
-SLASH_RG_ALIAS1 = "/rgalias"
-
 
 local function handler(msg)
 	local arg1, arg2, arg3
@@ -303,14 +302,22 @@ local function handler(msg)
 		print("|cffee5555[Rak Gaming Aliases]|r: Sending")
 	elseif arg1 == "add" then
 		if arg2 and arg3 then
-			RG_ALTS_DB[arg2] = arg3
+			if _G.RGAPIDBc then
+				_G.RGAPIDBc[arg2] = arg3
+			else
+				RG_ALTS_DB[arg2] = arg3
+			end
 			print("|cffee5555[Rak Gaming Aliases]|r: Added", arg2, "as", arg3)
 		else
 			print("|cffee5555[Rak Gaming Aliases]|r:|cff80ff00 /rgalias add <name> <alias>|r")
 		end
 	elseif arg1 == "remove" then
 		if arg2 then
-			RG_ALTS_DB[arg2] = nil
+			if _G.RGAPIDBc then
+				_G.RGAPIDBc[arg2] = nil
+			else
+				RG_ALTS_DB[arg2] = nil
+			end
 			print("|cffee5555[Rak Gaming Aliases]|r: Removed", arg2)
 		else
 			print("|cffee5555[Rak Gaming Aliases]|r:|cff80ff00 /rgalias remove <name>|r")
@@ -350,6 +357,8 @@ local function handler(msg)
 		print("|cffee5555[Rak Gaming Aliases]|r:\n|cff80ff00/rgalias default \n/rgalias request \n/rgalias send \n/rgalias add <name1> <alias> \n/rgalias enable <module>\n/rgalias disable <module>\n/rgalias status|r")
 	end
 end
+
+SLASH_RG_ALIAS1 = "/rgalias"
 SlashCmdList["RG_ALIAS"] = handler
 
 --[[
