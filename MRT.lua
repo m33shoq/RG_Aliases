@@ -1,7 +1,6 @@
-local addonName, addonTable = ...
-local GMRT = _G.GMRT
-
-if not GMRT then return end
+local GlobalAddonName = ...
+---@class AliasesNamespace
+local AliasesNamespace = select(2, ...)
 
 local function RaidCooldowns_Bar_TextName(eventName,bar,gsub_data,barData)
 	-- DevTool:AddData(barData)
@@ -27,17 +26,12 @@ local function RaidCooldowns_Bar_TextName(eventName,bar,gsub_data,barData)
 		gsub_data.name = customName
 	end
 end
-addonTable.HookMRTCD = function()
-	-- print("|cffee5555[Rak Gaming Aliases]|r MRT CD HOOKED")
-	GMRT.F:RegisterCallback("RaidCooldowns_Bar_TextName", RaidCooldowns_Bar_TextName)
-end
-
 
 local function Note_UpdateText(eventName,noteFrame)
     local text = noteFrame.text:GetText()
 	if not text then return end
 	local words = {}
-	for  colorCode, word in text:gmatch("|c(%x%x%x%x%x%x%x%x)(.-)|r") do -- match all color coded phrases
+	for colorCode, word in text:gmatch("|c(%x%x%x%x%x%x%x%x)(.-)|r") do -- match all color coded phrases
 		if not words[word] then
 			words[word] = {
 				colorCode = colorCode,
@@ -53,7 +47,20 @@ local function Note_UpdateText(eventName,noteFrame)
 	end
 end
 
-addonTable.HookMRTNote = function()
-	-- print("|cffee5555[Rak Gaming Aliases]|r MRT Note HOOKED")
-	GMRT.F:RegisterCallback("Note_UpdateText", Note_UpdateText)
+AliasesNamespace.HookMRTCD = function()
+	AliasesNamespace.debugPrint("MRT CD HOOKED")
+	if C_AddOns.IsAddOnLoadable("MRT") then
+		EventUtil.ContinueOnAddOnLoaded("MRT", function ()
+			GMRT.F:RegisterCallback("RaidCooldowns_Bar_TextName", RaidCooldowns_Bar_TextName)
+		end)
+	end
+end
+
+AliasesNamespace.HookMRTNote = function()
+	AliasesNamespace.debugPrint("MRT Note HOOKED")
+	if C_AddOns.IsAddOnLoadable("MRT") then
+		EventUtil.ContinueOnAddOnLoaded("MRT", function()
+			GMRT.F:RegisterCallback("Note_UpdateText", Note_UpdateText)
+		end)
+	end
 end

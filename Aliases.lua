@@ -1,65 +1,61 @@
--- 14.01.2024
-local GlobalAddonName, addonTable = ...
+-- 14.08.2024
+local GlobalAddonName = ...
+---@class AliasesNamespace
+local AliasesNamespace = select(2, ...)
+
 
 local Comm = LibStub:GetLibrary("AceComm-3.0")
 local LibDeflate = LibStub:GetLibrary("LibDeflate")
 
+
+function AliasesNamespace.print(...)
+	print("|cffee5555[Rak Gaming Aliases]|r", ...)
+end
+
+-- /run RG_ALTS_SETTINGS.debug = true
+function AliasesNamespace.debugPrint(...)
+	if RG_ALTS_SETTINGS and RG_ALTS_SETTINGS.debug then
+		AliasesNamespace.print("Debug:",...)
+	end
+end
+
 ------------------------------------------------------------------------
 -- RG_ALTS_DB DEFAULTS
 ------------------------------------------------------------------------
---[[
-
-Список псевдонимов для чаров Рак Гейминга. Первое слово в строке - псевдоним, остальные - имена чаров.
-
-Изначально брал чаров из главной гильдейской таблицы.
-Если не хватает какого-то вашего альта, или думаете что чей-то псевдоним не подходит, то пишите сюда.
-	CHAT GPT REQUEST:
-
-I have a list of characters, first word in list is alias, other words are character names.
-I need a lua table formatted like this:
-Each character name must have separete entry in table.
-
-RG_ALTS_DB_DEFAULT = {
-	["characterName"] = alias,
-	["characterName"] = alias,
-	["characterName"] = alias,
-	["characterName"] = alias,
-	["characterName"] = alias,
-}
-]]
 local initText = [[
-Нерчо - Нерчодк Нерчо Нерчолинь Нерчоп Нерчохд Нерчодуду
-Рома - Ромачибрю Кринжелина Ромадесгрип Хедстронгхх Хедстронгх Крусадэс Крусадесх
-Володя - Сэнтенза Вовадезкойл Хантеротадоя Чыкъчырык
-Кали - Каллиго Калиприст Калитян Калишаман Калиэвокер
-Нимб - Нимбмейн Нимбэвокер Нимбальт Нимбтвинк Нимбшаман Нимбсд Нимбрестор Нимбпал Нимбшам Нимбмэйн Нимбхил
-Лайт - Лайтпалочка Драгонпупс Сашкастарфол Батлкрабс Крепкийтотем
-Ловес - Ловес Аншен Совела Шоквес Нидхогг Ловська
-Фейтя - Фейтясд Фейтя Фейтяхдд Фейтяоом Фейтякринж
-Омежа - Омежечкаа Омежадракон Омежаэвокер Омежасэнсэй Омежка Омежечка Омежечкачсв
-Муни - Dxbd Dxbwarr Dxbmage Mejrenp Эннуелр Эннуелдх Эннуелвар Эннуелмаг Эннуеле
-Змей - Змейняша Змейняшка Змейсекс Змейнуашо Змейзло Змейснайп Змейкраш Змеймвп
-Эмпрайз - Окриса Арурун Лайму Рунрун Сиаро Риккири
-Турба - Турбоглэйв Турбоклык Турбобёрн Турбошайн
-Анти - Антилокк Полэвокер Антии Антих Антиидот Антирад Антихх Антирейдж
-Пикви - Крошкапикви Аувета Япивандополо Крошкамагии Нигайки
-Авэ - Авэвокер Авэ Авэвафля Авэмун Авэстихий Авэрейдж
-Бадито - Батькито Друито Магито Эвокерито Чернокнижито Электрито Рогито
-Фриран - Фриэвок Фрираан Фриранлк Фриранк
-Пауэл - Пауэл Килкомандер Лейонхэндс Рукадаггер Метеорбласт Дэзэнддикей Пятьдесять
-Дарклесс - Ракдвакдпс Графчпокало Пернатыйдуб Хисяко Левтрикдпс Брызгни
-Фейсмик - Фейсмикх Пошапкинс Фэйсмик Лёгфлесс Фейсмйк Фейсмик Фейсмикхх Фейсмикр
-Варсик - Варсикфейс Варсикус Роняюзапад Вэбзик Варсенуз Солеваяняшка Варсикдауби Варсек
-Кройфель - Кройфель Кройфёль Кроифёль Кроифель Папашкинз Триксгеймер Кроймонк Кройтик
-Синхх - Синххже Синхм Снхх Синххдх Синхп Синххводонос
-Селфлесс - Селфлессх Селфдк Селфмонк Всталфлесс Секамференс Селфпамп Вонючиймусор Селфпип
-Мишок - Мишокз Мишокэ Мишокдк Мишоксемпай Мишокбык
-Сквишех - Сквишех Сквишелол Сквише Метаесть Сквишехд Шипшейп
-Мэт - Мэтлокк Мэтдрэйк Ангратар Эгвэйн Мэткоутон Мэтх Мэталлика Мэтхх Мэтшок Юмэтбро
-Эндьюранс - Эндьюранс Эндьюрансшп Эндьюрансс Эндвокер Задозор Афрография Эндпамп
+Авэ - Авэ Авэвафля Авэвокер Авэмун Авэрейдж Авэстихий
+Анти - Антии Антиидот Антилокк Антирад Антирейдж Антих Антихх Полэвокер
+Бадито - Батькито Друито Магито Милито Рогито Чернокнижито Эвокерито Электрито
+Варсик - Варсенуз Варсикдауби Варсикус Варсикфейс Вэбзик Роняюзапад Солеваяняшка
+Ват - Ватестдвай
+Володя - Вовадезкойл Сэнтенза Хантеротадоя Чыкъчырык
+Дарклесс - Брызгни Графчпокало Левтрикдпс Перки Пернатыйдуб Ракдвакдпс Хисяко
+Джэрисс - Джэкисс Джэлисс Джэмисс Джэрисс Джэтисс Джэфисс
+Змей - Змейзло Змейкраш Змеймвп Змейнуашо Змейнушо Змейняша Змейняшка Змейсба Змейсекс Змейсмерти Змейснайп
+Кройфель - Кроифель Кроифёль Кроймонк Кройтик Кройфель Кройфёль Папашкинз Триксгеймер
+Лайт - Батлкрабс Драгонпупс Крепкийтотем Лайтпалочка Пышнаяклешня Сашкастарфол
+Лмгд - Lmgdp Lmgdsham Lmgdx Лмгддк
+Ловес - Аншен Кинемари Ловес Ловська Нидхогг Совела Шоквес
+Мишок - Мишокбык Мишокдк Мишокз Мишокрысь Мишоксемпай Мишокхх Мишокэ
+Муни - Ayodh Dxbevoker Dxbmage Dxbpaladin Dxbrogue Dxbwarr Dxbwl Dxbxdpriest
+Мэт - Ангратар Мэталлика Мэтдрэйк Мэткоутон Мэтлокк Мэтх Мэтхх Мэтшок Сникимэт Эгвэйн Юмэтбро
+Нерчо - Нерчо Нерчодк Нерчодуду Нерчолинь Нерчоп Нерчох Нерчохд
+Нимб - Нимбальт Нимбмейн Нимбмэйн Нимбпал Нимбрестор Нимбсд Нимбтвинк Нимбхил Нимбшам Нимбшаман Нимбэвокер
+Омежа - Омежадракон Омежасэнсэй Омежаэвокер Омежечка Омежечкаа Омежечкачсв Омежка
+Пауэл - Дэзэнддикей Килкомандер Лейонхэндс Метеорбласт Пауэл Пятьдесять Рукадаггер Фаннлбой
+Пикви - Аувета Крошкамагии Крошкапикви Нигайки Япивандополо
+Рома - Кринжелина Крусадесх Крусадэс Ромадесгрип Ромачибрю Хедстронгх Хедстронгхх
+Селфлесс - Blitzaug Blitzboltz Blitzp Blitzpally Blitzven Brownyz Deekaiz Hassanwar Onlyshocks Spinnyblitz Вонючиймусор Всталфлесс Секамференс Селфдк Селфлессх Селфмонк Селфнюша Селфпамп Селфпип
+Синхх - Синхм Синхп Синххводонос Синххдх Синххже Снхх
+Сквишех - Метаесть Сквише Сквишелол Сквишех Сквишехд Шипшейп
+Степан - Даркжрец Нюхаютраву Пирхис Степандракон Сухойвареник Эчпачдрак
+Турба - Турбобёрн Турбоглэйв Турбоклык Турбохолик Турбошайн
+Фейсмик - Лёгфлесс Пошапкинс Фейсмик Фейсмикр Фейсмикх Фейсмикхт Фейсмикхх Фейсмйк Фэйсмик
+Фейтя - Фейтя Фейтякринж Фейтяоом Фейтясд Фейтяхдд
+Фриран - Фрираан Фриранк Фриранлк Фриэвок
+Эмпрайз - Арурун Лайму Окриса Риккири Рунрун Сиаро
+Эндьюранс - Афрография Задозор Эндвокер Эндпамп Эндьюранс Эндьюрансс Эндьюрансшам Эндьюрансшп
 ]]
-
--- Твин - Твиннблейд Твинфлекс Твинпипоклэп Твинбладж
 
 -- local RG_ALTS_DB = nil
 
@@ -105,8 +101,8 @@ local function RG_ClassColorName(unit)
 _G.RG_UnitName = RG_UnitName
 _G.RG_ClassColorName = RG_ClassColorName
 
-addonTable.RG_UnitName = RG_UnitName
-addonTable.RG_ClassColorName = RG_ClassColorName
+AliasesNamespace.RG_UnitName = RG_UnitName
+AliasesNamespace.RG_ClassColorName = RG_ClassColorName
 ------------------------------------------------------------------------
 -- COMMS
 ------------------------------------------------------------------------
@@ -136,7 +132,7 @@ local function SendAliasData()
 	if encoded then
 		Comm:SendCommMessage("RGAliasD", encoded, chatType, nil,"BULK",
 		function(arg1,arg2,arg3)
-			print(arg1,arg2,arg3)
+			AliasesNamespace.debugPrint(arg1,arg2,arg3)
 		end)
 	end
 end
@@ -146,7 +142,7 @@ Comm:RegisterComm("RGAliasD", function(prefix, message, distribution, sender)
 		local encoded = LibDeflate:DecodeForWoWAddonChannel(message)
 		local decompressed = LibDeflate:DecompressDeflate(encoded)
 
-		print("|cffee5555[Rak Gaming Aliases]|r Importing data from", sender)
+		AliasesNamespace.print("Importing data from", sender)
 		local data = {strsplit("\n",decompressed)}
 		for i=1,#data do
 			local alias, names = strsplit("^",data[i],2)
@@ -154,7 +150,7 @@ Comm:RegisterComm("RGAliasD", function(prefix, message, distribution, sender)
 				local chars = {strsplit("^",names)}
 				for j=1,#chars do
 					RG_ALTS_DB[chars[j]] = alias
-					-- print("Importing", chars[j], "as", alias)
+					AliasesNamespace.debugPrint("Importing", chars[j], "as", alias)
 				end
 			end
 		end
@@ -179,8 +175,6 @@ Comm:RegisterComm("RGAliasR", function(prefix, message, distribution, sender)
 	end
 end)
 
-
-
 local function ResetRG_ALTS_DB()
 	RG_ALTS_DB = GetRGDefault()
 	_G.RG_ALTS_DB = RG_ALTS_DB
@@ -189,14 +183,12 @@ end
 local modules = {
 	["blizzard"] = true,
 	["shadoweduf"] = true,
-	-- ["Grid2"] = true,
-	-- ["ElvUI"] = true,
 	["vuhdo"] = true,
 	["khm"] = true,
 	["shestakui"] = true,
 	["mrtnote"] = true,
 	["mrtcd"] = true,
-	["weakauras"] = true,
+	["cell"] = true,
 }
 local modulesString = [[
 
@@ -208,14 +200,37 @@ VuhDo
 ShestakUI
 MRTNote
 MRTCD
+Cell
 ]]
-local function modulesModernize(tbl)
-	local newtbl = {}
-	for k,v in pairs(tbl) do
-		newtbl[k:lower()] = v
+
+local function loadModules()
+	if RG_ALTS_SETTINGS.settings["shadoweduf"] then
+		AliasesNamespace.HookSUF()
 	end
-	tbl.v3 = true
-	return newtbl
+
+	if RG_ALTS_SETTINGS.settings["blizzard"] then
+		AliasesNamespace.HookBlizzard()
+	end
+
+	if RG_ALTS_SETTINGS.settings["khm"] then
+		AliasesNamespace.HookKHM()
+	end
+
+	if RG_ALTS_SETTINGS.settings["shestakui"] then
+		AliasesNamespace.HookShestakUI()
+	end
+
+	if RG_ALTS_SETTINGS.settings["mrtnote"] then
+		AliasesNamespace.HookMRTNote()
+	end
+
+	if RG_ALTS_SETTINGS.settings["mrtcd"] then
+		AliasesNamespace.HookMRTCD()
+	end
+
+	if RG_ALTS_SETTINGS.settings["cell"] then
+		AliasesNamespace.HookCell()
+	end
 end
 
 local addon = CreateFrame("Frame")
@@ -225,53 +240,48 @@ addon:SetScript("OnEvent", function(self,event, ...)
 	if addonName ~= GlobalAddonName then
 		return
 	end
-	print("|cffee5555[Rak Gaming Aliases]|r: Ready")
+	AliasesNamespace.debugPrint("Ready")
 	RG_ALTS_DB = _G.RG_ALTS_DB or GetRGDefault()
 	_G.RG_ALTS_DB = RG_ALTS_DB
+
+	local currentVer = tonumber(C_AddOns.GetAddOnMetadata(GlobalAddonName, "Version"))
+
 	RG_ALTS_SETTINGS = _G.RG_ALTS_SETTINGS or {
-		["blizzard"] = false,
-		["shadoweduf"] = false,
-		["vuhdo"] = false,
-		["khm"] = false,
-		["shestakui"] = false,
-		["mrtnote"] = false,
-		["mrtcd"] = false,
-		["weakauras"] = false,
+		version = currentVer,
+		settings = {},
 	}
-	addonTable.RG_ALTS_DB = RG_ALTS_DB
-	for k,v in pairs(modules) do
-		if v == nil then
-			RG_ALTS_SETTINGS[k] = false
+
+	RG_ALTS_SETTINGS.version = RG_ALTS_SETTINGS.version or 0
+	-- modernize settings
+	if RG_ALTS_SETTINGS.version < 5 then
+		local modulesSetings = CopyTable(RG_ALTS_SETTINGS)
+		modulesSetings.version = nil -- do not version field
+		-- ensure all settings are lowercase
+		for module,isOn in pairs(modulesSetings) do
+			RG_ALTS_SETTINGS[module] = nil -- remove module keys from old data
+			modulesSetings[module] = nil
+			modulesSetings[module:lower()] = isOn
 		end
-	end
 
-	if RG_ALTS_SETTINGS["shadoweduf"] and addonTable.HookSUF then
-		addonTable.HookSUF()
-	end
+		-- remove anything that is not a module
+		for key in pairs(modulesSetings) do
+			if modules[key] == nil then
+				modulesSetings[key] = nil
+			end
+		end
 
-	if RG_ALTS_SETTINGS["blizzard"] and addonTable.HookBlizzard then
-		addonTable.HookBlizzard()
-	end
+		-- ensure all modules exist in settings
+		for module in pairs(modules) do
+			if not type(modulesSetings[module]) == 'boolean' then
+				modulesSetings[module] = false
+			end
+		end
 
-	if RG_ALTS_SETTINGS["khm"] and addonTable.HookKHM then
-		addonTable.HookKHM()
+		RG_ALTS_SETTINGS.settings = modulesSetings
 	end
+	RG_ALTS_SETTINGS.version = currentVer
 
-	if RG_ALTS_SETTINGS["shestakui"] and addonTable.HookShestakUI then
-		addonTable.HookShestakUI()
-	end
-
-	if RG_ALTS_SETTINGS["mrtnote"] and addonTable.HookMRTNote then
-		addonTable.HookMRTNote()
-	end
-
-	if RG_ALTS_SETTINGS["mrtcd"] and addonTable.HookMRTCD then
-		addonTable.HookMRTCD()
-	end
-
-	if not RG_ALTS_SETTINGS.v3 then
-		RG_ALTS_SETTINGS = modulesModernize(RG_ALTS_SETTINGS)
-	end
+	loadModules()
 
 	self:UnregisterEvent("ADDON_LOADED")
 end)
@@ -294,13 +304,13 @@ local function handler(msg)
 	end
 	if arg1 == "default" then
 		ResetRG_ALTS_DB()
-		print("|cffee5555[Rak Gaming Aliases]|r: Reseted Alts Database to Default")
+		AliasesNamespace.print("Reseted Alts Database to Default")
 	elseif arg1 == "request" then
 		Request()
-		print("|cffee5555[Rak Gaming Aliases]|r: Requesting")
+		AliasesNamespace.print("Requesting")
 	elseif arg1 == "send" then
 		SendAliasData()
-		print("|cffee5555[Rak Gaming Aliases]|r: Sending")
+		AliasesNamespace.print("Sending")
 	elseif arg1 == "add" then
 		if arg2 and arg3 then
 			if _G.RGAPIDBc then
@@ -308,9 +318,9 @@ local function handler(msg)
 			else
 				RG_ALTS_DB[arg2] = arg3
 			end
-			print("|cffee5555[Rak Gaming Aliases]|r: Added", arg2, "as", arg3)
+			AliasesNamespace.print("Added", arg2, "as", arg3)
 		else
-			print("|cffee5555[Rak Gaming Aliases]|r:|cff80ff00 /rgalias add <name> <alias>|r")
+			AliasesNamespace.print("|cff80ff00/rgalias add <name> <alias>|r")
 		end
 	elseif arg1 == "remove" then
 		if arg2 then
@@ -319,43 +329,48 @@ local function handler(msg)
 			else
 				RG_ALTS_DB[arg2] = nil
 			end
-			print("|cffee5555[Rak Gaming Aliases]|r: Removed", arg2)
+			AliasesNamespace.print("Removed", arg2)
 		else
-			print("|cffee5555[Rak Gaming Aliases]|r:|cff80ff00 /rgalias remove <name>|r")
+			AliasesNamespace.print("|cff80ff00/rgalias remove <name>|r")
 		end
 	elseif arg1 == "get" then
 		if arg2 then
-			print(RG_ALTS_DB[arg2] and ("|cffee5555[Rak Gaming Aliases]|r:" .. RG_ALTS_DB[arg2]) or ("|cffee5555[Rak Gaming Aliases]|r: No alias for " .. arg2))
+			AliasesNamespace.print(RG_ALTS_DB[arg2] and (RG_ALTS_DB[arg2]) or ("No alias for " .. arg2))
 		end
 	elseif arg1 == "disable" then
 		if arg2 then
 			if modules[arg2:lower()] then
-				RG_ALTS_SETTINGS[arg2:lower()] = false
-				print("|cffee5555[Rak Gaming Aliases]|r: Disabled", arg2)
+				RG_ALTS_SETTINGS.settings[arg2:lower()] = false
+				AliasesNamespace.print("Disabled", arg2)
 			else
-				print("|cffee5555[Rak Gaming Aliases]|r: No such module")
+				AliasesNamespace.print("No such module")
 			end
 		else
-			print("|cffee5555[Rak Gaming Aliases]|r:|cff80ff00 /rgalias disable <module>|r" .. modulesString)
+			AliasesNamespace.print("|cff80ff00/rgalias disable <module>|r" .. modulesString)
 		end
 	elseif arg1 == "enable" then
 		if arg2 then
 			if modules[arg2:lower()] then
-				RG_ALTS_SETTINGS[arg2:lower()] = true
-				print("|cffee5555[Rak Gaming Aliases]|r: Enabled", arg2)
+				RG_ALTS_SETTINGS.settings[arg2:lower()] = true
+				AliasesNamespace.print("Enabled", arg2)
 			else
-				print("|cffee5555[Rak Gaming Aliases]|r: No such module")
+				AliasesNamespace.print("No such module")
 			end
 		else
-			print("|cffee5555[Rak Gaming Aliases]|r:|cff80ff00 /rgalias enable <module>|r" .. modulesString)
+			AliasesNamespace.print("|cff80ff00/rgalias enable <module>|r" .. modulesString)
 		end
 	elseif arg1 == "status" then
-		print("|cffee5555[Rak Gaming Aliases]|r: modules settings:")
-		for k,v in pairs(RG_ALTS_SETTINGS) do
-			print(k,v and "Enabled" or "Disabled")
+		AliasesNamespace.print("modules settings:")
+		local res = {}
+		for module in pairs(modules) do
+			res[#res+1] = module .. " " .. (RG_ALTS_SETTINGS.settings[module] and "|cff00ff00Enabled|r" or "|cffff0000Disabled|r")
+		end
+		table.sort(res)
+		for i=1,#res do
+			print(res[i])
 		end
 	else
-		print("|cffee5555[Rak Gaming Aliases]|r:\n|cff80ff00/rgalias default \n/rgalias request \n/rgalias send \n/rgalias add <name1> <alias> \n/rgalias enable <module>\n/rgalias disable <module>\n/rgalias status|r")
+		AliasesNamespace.print("\n|cff80ff00/rgalias default\n/rgalias request\n/rgalias send\n/rgalias add <name1> <alias>\n/rgalias enable <module>\n/rgalias disable <module>\n/rgalias status|r")
 	end
 end
 
@@ -457,7 +472,7 @@ local RG_ALTS_DB = _G.RG_ALTS_DB
 
 @VuhDoBarCustomizerHealth.lua line 643
 
-tNickname = RG_ALTS_SETTINGS and RG_ALTS_SETTINGS["VuhDo"] and RG_ALTS_DB[ tInfo["name"] ] or tInfo["name"];
+tNickname = RG_ALTS_SETTINGS and RG_ALTS_SETTINGS.settings["VuhDo"] and RG_ALTS_DB[ tInfo["name"] ] or tInfo["name"];
 
 ------------------------------------------------------------------------
 ------------------------------------------------------------------------

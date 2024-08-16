@@ -1,11 +1,13 @@
-if not ShestakUI then return end
+local GlobalAddonName = ...
+---@class AliasesNamespace
+local AliasesNamespace = select(2, ...)
 
-addonName, addonTable = ...
-
-function addonTable.HookShestakUI()
+local function HookShestakUI()
+	if not ShestakUI then return end
 	local T = ShestakUI[1]
 	local Tags = ShestakUI.oUF and ShestakUI.oUF.Tags
 
+	local RG_UnitName = AliasesNamespace.RG_UnitName
 	Tags.Methods["NameArena"] = function(unit)
 		local name = RG_UnitName(unit) or UnitName(unit) or UNKNOWN
 		return T.UTF(name, 4, false)
@@ -34,5 +36,11 @@ function addonTable.HookShestakUI()
 		end
 		return T.UTF(name, 18, false)
 	end
-	-- print("|cffee5555[Rak Gaming Aliases]|r ShestakUI HOOKED")
+	AliasesNamespace.debugPrint("ShestakUI HOOKED")
+end
+
+function AliasesNamespace.HookShestakUI()
+	if C_AddOns.IsAddOnLoadable("ShestakUI") then
+		EventUtil.ContinueOnAddOnLoaded("ShestakUI", HookShestakUI)
+	end
 end

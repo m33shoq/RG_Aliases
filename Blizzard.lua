@@ -1,6 +1,8 @@
-local addonName, addonTable = ...
+local GlobalAddonName = ...
+---@class AliasesNamespace
+local AliasesNamespace = select(2, ...)
 
-local RG_UnitName = addonTable.RG_UnitName
+local RG_UnitName = AliasesNamespace.RG_UnitName
 
 local function UpdateNameOverride(self)
 	local unit_name = RG_UnitName(self.displayedUnit)
@@ -8,8 +10,8 @@ local function UpdateNameOverride(self)
 	return true
 end
 
-function addonTable.HookBlizzard()
-	-- print("|cffee5555[Rak Gaming Aliases]|r Blizzard frames HOOKED")
+function AliasesNamespace.HookBlizzard()
+	AliasesNamespace.debugPrint("Blizzard frames HOOKED")
 	hooksecurefunc("CompactUnitFrame_UpdateName",function(frame)
 		if frame and not frame:IsForbidden() then
 			local frame_name = frame:GetName()
