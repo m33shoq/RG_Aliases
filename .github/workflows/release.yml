@@ -1,0 +1,28 @@
+name: WoW Packager
+
+on:
+  push:
+     tags:
+        - '**'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      CF_API_KEY: ${{ secrets.CF_API_KEY }}
+      WOWI_API_TOKEN: ${{ secrets.WOWI_API_TOKEN }}
+      WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
+      GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}  # "GITHUB_TOKEN" is a secret always provided to the workflow
+                                                 # for your own token, the name cannot start with "GITHUB_"
+    steps:
+      - name: Clone project
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # gets entire git history, needed for automatic changelogs
+
+          # once cloned, we just run the GitHub Action for the packager project
+      - name: Package and release
+        uses: BigWigsMods/packager@v2
+        with:
+          args: -g mainline
+
