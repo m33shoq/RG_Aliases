@@ -5,6 +5,9 @@
 ## SavedVariables: RG_ALTS_DB, RG_ALTS_SETTINGS
 ## AddonCompartmentFunc: RGALIAS_MinimapClickFunction
 ## IconTexture: Interface\AddOns\RG_Aliases\logo.png
+## X-Curse-Project-ID: 1085869
+## X-WoWI-ID: 26802
+## X-Wago-ID: aN0Y1v6j
 
 embeds.xml
 
