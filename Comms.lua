@@ -43,25 +43,23 @@ function AliasesNamespace.SendAliasData(callback, target)
 end
 
 Comm:RegisterComm("RGAliasD", function(prefix, message, distribution, sender)
-	if distribution == "RAID" or distribution == "PARTY" then
-		AliasesNamespace.popup:Popup(sender,function()
-			local encoded = LibDeflate:DecodeForWoWAddonChannel(message)
-			local decompressed = LibDeflate:DecompressDeflate(encoded)
+	AliasesNamespace.popup:Popup(sender,function()
+		local encoded = LibDeflate:DecodeForWoWAddonChannel(message)
+		local decompressed = LibDeflate:DecompressDeflate(encoded)
 
-			AliasesNamespace.print("Importing data from", sender)
-			local data = {strsplit("\n",decompressed)}
-			for i=1,#data do
-				local alias, names = strsplit("^",data[i],2)
-				if alias and names then
-					local chars = {strsplit("^",names)}
-					for j=1,#chars do
-						RG_ALTS_DB[chars[j]] = alias
-						AliasesNamespace.debugPrint("Importing", chars[j], "as", alias)
-					end
+		AliasesNamespace.print("Importing data from", sender)
+		local data = {strsplit("\n",decompressed)}
+		for i=1,#data do
+			local alias, names = strsplit("^",data[i],2)
+			if alias and names then
+				local chars = {strsplit("^",names)}
+				for j=1,#chars do
+					RG_ALTS_DB[chars[j]] = alias
+					AliasesNamespace.debugPrint("Importing", chars[j], "as", alias)
 				end
 			end
-		end)
-	end
+		end
+	end)
 end)
 
 function AliasesNamespace.Request()
