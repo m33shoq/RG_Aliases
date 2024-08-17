@@ -2,6 +2,13 @@ local GlobalAddonName = ...
 ---@class AliasesNamespace
 local AliasesNamespace = select(2, ...)
 
+AliasesNamespace:NewModule("grid2", {
+	name = "Grid2",
+	desc = "Adds new indicator to Grid2",
+	alwaysEnabled = true,
+	addonName = "Grid2"
+})
+
 local function hookGrid2()
 	local Grid2 = _G.Grid2
 
@@ -9,6 +16,8 @@ local function hookGrid2()
 		return
 	end
 	AliasesNamespace.debugPrint("Grid2 STATUS LOADED")
+	AliasesNamespace.hookedModules["grid2"] = true
+
 	local TAGNAME = "Rak Gaming Alias"
 	local Name = Grid2.statusPrototype:new(TAGNAME)
 

@@ -2,6 +2,12 @@ local GlobalAddonName = ...
 ---@class AliasesNamespace
 local AliasesNamespace = select(2, ...)
 
+AliasesNamespace:NewModule("blizzard", {
+	name = "Blizzard Raid Frames",
+	desc = "Changes names on Blizzard Raid Frames",
+	addonName = "Blizzard_CompactRaidFrames"
+})
+
 local RG_UnitName = AliasesNamespace.RG_UnitName
 
 local function UpdateNameOverride(self)
@@ -12,6 +18,8 @@ end
 
 function AliasesNamespace.HookBlizzard()
 	AliasesNamespace.debugPrint("Blizzard frames HOOKED")
+	AliasesNamespace.hookedModules["blizzard"] = true
+
 	hooksecurefunc("CompactUnitFrame_UpdateName",function(frame)
 		if frame and not frame:IsForbidden() then
 			local frame_name = frame:GetName()

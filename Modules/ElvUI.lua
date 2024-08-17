@@ -2,12 +2,20 @@ local GlobalAddonName = ...
 ---@class AliasesNamespace
 local AliasesNamespace = select(2, ...)
 
+AliasesNamespace:NewModule("elvui", {
+	name = "ElvUI",
+	desc = "Adds new tags to ElvUI",
+	addonName = "ElvUI",
+	alwaysEnabled = true,
+})
+
 local function hookElvUI()
 	local ElvUI = _G.ElvUI
 	if not ElvUI then
 		return
 	end
 	AliasesNamespace.debugPrint("ElvUI TAGS LOADED")
+	AliasesNamespace.hookedModules["elvui"] = true
 	local E, L = unpack(ElvUI)
 
 	local Translit = E.Libs.Translit
@@ -55,13 +63,9 @@ local function hookElvUI()
 	--	New Rak Gaming Name Tags
 	------------------------------------------------------------------------
 
-	E:AddTag(
-		"nameRG",
-		"UNIT_NAME_UPDATE",
-		function(unit)
-			return UnitName(unit)
-		end
-	)
+	E:AddTag("nameRG", "UNIT_NAME_UPDATE", function(unit)
+		return UnitName(unit)
+	end)
 
 	for textFormat, length in pairs({ veryshort = 5, short = 10, medium = 15, long = 20 }) do
 		E:AddTag(format('health:deficit-percent:nameRG-%s', textFormat), 'UNIT_HEALTH UNIT_MAXHEALTH UNIT_NAME_UPDATE', function(unit)

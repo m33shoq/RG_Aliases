@@ -2,6 +2,18 @@ local GlobalAddonName = ...
 ---@class AliasesNamespace
 local AliasesNamespace = select(2, ...)
 
+AliasesNamespace:NewModule("mrtnote", {
+	name = "MRT Note",
+	desc = "Changes names in MRT Note on screen(not in MRT Options)",
+	addonName = "MRT"
+})
+
+AliasesNamespace:NewModule("mrtcd", {
+	name = "MRT Cooldowns",
+	desc = "Changes names on MRT Cooldown bars/icons",
+	addonName = "MRT"
+})
+
 local function RaidCooldowns_Bar_TextName(eventName,bar,gsub_data,barData)
 	-- DevTool:AddData(barData)
     --actual name is barData.fullName or barData.name [w/o server]
@@ -49,6 +61,7 @@ end
 
 AliasesNamespace.HookMRTCD = function()
 	AliasesNamespace.debugPrint("MRT CD HOOKED")
+	AliasesNamespace.hookedModules["mrtcd"] = true
 	if C_AddOns.IsAddOnLoadable("MRT") then
 		EventUtil.ContinueOnAddOnLoaded("MRT", function ()
 			GMRT.F:RegisterCallback("RaidCooldowns_Bar_TextName", RaidCooldowns_Bar_TextName)
@@ -58,6 +71,7 @@ end
 
 AliasesNamespace.HookMRTNote = function()
 	AliasesNamespace.debugPrint("MRT Note HOOKED")
+	AliasesNamespace.hookedModules["mrtnote"] = true
 	if C_AddOns.IsAddOnLoadable("MRT") then
 		EventUtil.ContinueOnAddOnLoaded("MRT", function()
 			GMRT.F:RegisterCallback("Note_UpdateText", Note_UpdateText)

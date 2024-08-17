@@ -3,17 +3,20 @@
 ## Author: m33shoq
 ## Version: 5
 ## SavedVariables: RG_ALTS_DB, RG_ALTS_SETTINGS
+## AddonCompartmentFunc: RGALIAS_MinimapClickFunction
 ## IconTexture: Interface\AddOns\RG_Aliases\logo.png
 
 embeds.xml
 
 Aliases.lua
+Comms.lua
+Options.lua
 
-Grid2.lua
-ElvUI.lua
-Blizzard.lua
-ShadowedUF.lua
-KHM.lua
-ShestakUI.lua
-MRT.lua
-Cell.lua
+Modules/Grid2.lua
+Modules/ElvUI.lua
+Modules/Blizzard.lua
+Modules/ShadowedUF.lua
+Modules/KHM.lua
+Modules/ShestakUI.lua
+Modules/MRT.lua
+Modules/Cell.lua

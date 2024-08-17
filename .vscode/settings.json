@@ -29,7 +29,27 @@
 		"Event",
 		"RGAPI",
 		"Cell",
-		"Add"
+		"Add",
+		"ToggleDropDownMenu",
+		"CloseDropDownMenus",
+		"GameTooltip_Hide",
+		"HelpPlate_Hide",
+		"MenuUtil",
+		"HelpPlate_Show",
+		"PanelTemplates_SetDisabledTabState",
+		"HELP_PLATE_BUTTONS",
+		"GameTooltip_AddNewbieTip",
+		"HelpPlate_IsShowing",
+		"HelpPlateTooltip",
+		"HelpPlate",
+		"MouseIsOver",
+		"RGAPIDBc",
+		"ChatFrame1EditBox",
+		"YES",
+		"NO",
+		"DECLINE",
+		"ACCEPT",
+		"ALWAYS"
 	],
     "Lua.diagnostics.disable": [
 		"lowercase-global",
@@ -44,12 +64,14 @@
 		"cast-local-type",
 		"unbalanced-assignments",
 		"inject-field",
-		"missing-parameter"
+		"missing-parameter",
+		"missing-return"
 	],
 	"Lua.runtime.version":"Lua 5.1",
 	"Lua.workspace.ignoreDir": [
 	  ".vscode",
-	  "Libs"
+	  "Libs",
+	  "ExLib"
 	],
 	"Lua.runtime.builtin": {
 		"basic": "disable",
@@ -65,6 +87,7 @@
 	"Lua.workspace.library": [
 		"C:\\_Games\\World of Warcraft\\_retail_\\Interface\\AddOns\\MRT",
 		"C:\\_Games\\GitRepos\\WeakAuras2",
+		"C:\\_Games\\GitRepos\\ExRT_Reminder",
 		"~\\.vscode\\extensions\\ketho.wow-api-0.17.4\\Annotations"
 	]
   }

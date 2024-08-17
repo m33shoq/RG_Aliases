@@ -12,12 +12,20 @@ local GlobalAddonName = ...
 ---@class AliasesNamespace
 local AliasesNamespace = select(2, ...)
 
+AliasesNamespace:NewModule("shadowuf", {
+	name = "Shadowed Unit Frames",
+	desc = "Adds custom tags to Shadowed Unit Frames",
+	alwaysEnabled = true,
+	addonName = "ShadowedUnitFrames",
+})
+
 function AliasesNamespace.HookSUF()
 	-- options
 	EventUtil.ContinueOnAddOnLoaded("ShadowedUF_Options", function()
 		AliasesNamespace.debugPrint("SUF TAGS LOADED AS CUSTOM TAGS")
+
 		local ShadowUF = _G.ShadowUF
-		if not ShadowUF then return end
+
 		ShadowUF.db.profile.tags["RG_Name"] = {
 			["func"] = [[function(unit, unitOwner)
 				return RG_UnitName and RG_UnitName(unitOwner) or UnitName(unitOwner) or UNKNOWN
@@ -53,26 +61,27 @@ function AliasesNamespace.HookSUF()
 	-- main addon
 	EventUtil.ContinueOnAddOnLoaded("ShadowedUnitFrames", function()
 		AliasesNamespace.debugPrint("SUF TAGS ADDED")
+		AliasesNamespace.hookedModules["shadowuf"] = true
+
 		local ShadowUF = _G.ShadowUF
-		if not ShadowUF then return end
 
-		ShadowUF.Tags.defaultCategories["RG_Name"] = "misc"
-		ShadowUF.Tags.defaultEvents["RG_Name"] = "UNIT_NAME_UPDATE"
-		ShadowUF.Tags.defaultHelp["RG_Name"] = "Shows Rak Gaming Alias"
-		ShadowUF.Tags.defaultNames["RG_Name"] = "RG Alias"
-		ShadowUF.Tags.defaultTags["RG_Name"] = [[function(unit, unitOwner) return RG_UnitName and RG_UnitName(unitOwner) or UnitName(unitOwner) or UNKNOWN end]]
+		-- ShadowUF.Tags.defaultCategories["RG_Name"] = "misc"
+		-- ShadowUF.Tags.defaultEvents["RG_Name"] = "UNIT_NAME_UPDATE"
+		-- ShadowUF.Tags.defaultHelp["RG_Name"] = "Shows Rak Gaming Alias"
+		-- ShadowUF.Tags.defaultNames["RG_Name"] = "RG Alias"
+		-- ShadowUF.Tags.defaultTags["RG_Name"] = [[function(unit, unitOwner) return RG_UnitName and RG_UnitName(unitOwner) or UnitName(unitOwner) or UNKNOWN end]]
 
-		ShadowUF.Tags.defaultCategories["RG_Name_ClassColored"] = "misc"
-		ShadowUF.Tags.defaultEvents["RG_Name_ClassColored"] = "UNIT_NAME_UPDATE"
-		ShadowUF.Tags.defaultHelp["RG_Name_ClassColored"] = "Shows Rak Gaming Alias with class color"
-		ShadowUF.Tags.defaultNames["RG_Name_ClassColored"] = "RG Alias(Class colored)"
-		ShadowUF.Tags.defaultTags["RG_Name_ClassColored"] = [[function(unit, unitOwner)
-			local color = ShadowUF:GetClassColor(unitOwner)
-			local name = RG_UnitName and RG_UnitName(unitOwner) or UnitName(unitOwner) or UNKNOWN
-			if not color then
-				return name
-			end
-			return string.format("%s%s|r", color, name)
-		end]]
+		-- ShadowUF.Tags.defaultCategories["RG_Name_ClassColored"] = "misc"
+		-- ShadowUF.Tags.defaultEvents["RG_Name_ClassColored"] = "UNIT_NAME_UPDATE"
+		-- ShadowUF.Tags.defaultHelp["RG_Name_ClassColored"] = "Shows Rak Gaming Alias with class color"
+		-- ShadowUF.Tags.defaultNames["RG_Name_ClassColored"] = "RG Alias(Class colored)"
+		-- ShadowUF.Tags.defaultTags["RG_Name_ClassColored"] = [[function(unit, unitOwner)
+		-- 	local color = ShadowUF:GetClassColor(unitOwner)
+		-- 	local name = RG_UnitName and RG_UnitName(unitOwner) or UnitName(unitOwner) or UNKNOWN
+		-- 	if not color then
+		-- 		return name
+		-- 	end
+		-- 	return string.format("%s%s|r", color, name)
+		-- end]]
 	end)
 end

@@ -3,4 +3,6 @@
   <Include file="Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml"/>
   <Include file="Libs\AceComm-3.0\AceComm-3.0.xml"/>
   <Script file="Libs\LibDeflate\LibDeflate.lua"/>
+  <Script file="Libs\ExLib.lua"/>
+  <Script file="Libs\MLib.lua"/>
 </Ui>

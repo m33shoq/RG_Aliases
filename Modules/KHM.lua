@@ -2,10 +2,17 @@ local GlobalAddonName = ...
 ---@class AliasesNamespace
 local AliasesNamespace = select(2, ...)
 
+AliasesNamespace:NewModule("khm", {
+	name = "KHM Raid Frames",
+	desc = "Changes names on KHM Raid Frames",
+	addonName = "KHMRaidFrames",
+})
+
 local function hookKHM()
 	local KHMRaidFrames = LibStub("AceAddon-3.0"):GetAddon("KHMRaidFrames")
 	local RG_UnitName = AliasesNamespace.RG_UnitName
 	AliasesNamespace.debugPrint("KHM HOOKED")
+	AliasesNamespace.hookedModules["khm"] = true
 	function KHMRaidFrames.SetUpNameInternal(frame, groupType)
 		if not frame.name then return end
 

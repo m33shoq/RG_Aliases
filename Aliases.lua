@@ -4,9 +4,12 @@ local GlobalAddonName = ...
 local AliasesNamespace = select(2, ...)
 
 
-local Comm = LibStub:GetLibrary("AceComm-3.0")
-local LibDeflate = LibStub:GetLibrary("LibDeflate")
-
+local realmKey = GetRealmName() or ""
+local charName = UnitName'player' or ""
+realmKey = realmKey:gsub(" ","")
+AliasesNamespace.realmKey = realmKey
+AliasesNamespace.charKey = charName .. "-" .. realmKey
+AliasesNamespace.charName = charName
 
 function AliasesNamespace.print(...)
 	print("|cffee5555[Rak Gaming Aliases]|r", ...)
@@ -19,63 +22,24 @@ function AliasesNamespace.debugPrint(...)
 	end
 end
 
-------------------------------------------------------------------------
--- RG_ALTS_DB DEFAULTS
-------------------------------------------------------------------------
-local initText = [[
-Авэ - Авэ Авэвафля Авэвокер Авэмун Авэрейдж Авэстихий
-Анти - Антии Антиидот Антилокк Антирад Антирейдж Антих Антихх Полэвокер
-Бадито - Батькито Друито Магито Милито Рогито Чернокнижито Эвокерито Электрито
-Варсик - Варсенуз Варсикдауби Варсикус Варсикфейс Вэбзик Роняюзапад Солеваяняшка
-Ват - Ватестдвай
-Володя - Вовадезкойл Сэнтенза Хантеротадоя Чыкъчырык
-Дарклесс - Брызгни Графчпокало Левтрикдпс Перки Пернатыйдуб Ракдвакдпс Хисяко
-Джэрисс - Джэкисс Джэлисс Джэмисс Джэрисс Джэтисс Джэфисс
-Змей - Змейзло Змейкраш Змеймвп Змейнуашо Змейнушо Змейняша Змейняшка Змейсба Змейсекс Змейсмерти Змейснайп
-Кройфель - Кроифель Кроифёль Кроймонк Кройтик Кройфель Кройфёль Папашкинз Триксгеймер
-Лайт - Батлкрабс Драгонпупс Крепкийтотем Лайтпалочка Пышнаяклешня Сашкастарфол
-Лмгд - Lmgdp Lmgdsham Lmgdx Лмгддк
-Ловес - Аншен Кинемари Ловес Ловська Нидхогг Совела Шоквес
-Мишок - Мишокбык Мишокдк Мишокз Мишокрысь Мишоксемпай Мишокхх Мишокэ
-Муни - Ayodh Dxbevoker Dxbmage Dxbpaladin Dxbrogue Dxbwarr Dxbwl Dxbxdpriest
-Мэт - Ангратар Мэталлика Мэтдрэйк Мэткоутон Мэтлокк Мэтх Мэтхх Мэтшок Сникимэт Эгвэйн Юмэтбро
-Нерчо - Нерчо Нерчодк Нерчодуду Нерчолинь Нерчоп Нерчох Нерчохд
-Нимб - Нимбальт Нимбмейн Нимбмэйн Нимбпал Нимбрестор Нимбсд Нимбтвинк Нимбхил Нимбшам Нимбшаман Нимбэвокер
-Омежа - Омежадракон Омежасэнсэй Омежаэвокер Омежечка Омежечкаа Омежечкачсв Омежка
-Пауэл - Дэзэнддикей Килкомандер Лейонхэндс Метеорбласт Пауэл Пятьдесять Рукадаггер Фаннлбой
-Пикви - Аувета Крошкамагии Крошкапикви Нигайки Япивандополо
-Рома - Кринжелина Крусадесх Крусадэс Ромадесгрип Ромачибрю Хедстронгх Хедстронгхх
-Селфлесс - Blitzaug Blitzboltz Blitzp Blitzpally Blitzven Brownyz Deekaiz Hassanwar Onlyshocks Spinnyblitz Вонючиймусор Всталфлесс Секамференс Селфдк Селфлессх Селфмонк Селфнюша Селфпамп Селфпип
-Синхх - Синхм Синхп Синххводонос Синххдх Синххже Снхх
-Сквишех - Метаесть Сквише Сквишелол Сквишех Сквишехд Шипшейп
-Степан - Даркжрец Нюхаютраву Пирхис Степандракон Сухойвареник Эчпачдрак
-Турба - Турбобёрн Турбоглэйв Турбоклык Турбохолик Турбошайн
-Фейсмик - Лёгфлесс Пошапкинс Фейсмик Фейсмикр Фейсмикх Фейсмикхт Фейсмикхх Фейсмйк Фэйсмик
-Фейтя - Фейтя Фейтякринж Фейтяоом Фейтясд Фейтяхдд
-Фриран - Фрираан Фриранк Фриранлк Фриэвок
-Эмпрайз - Арурун Лайму Окриса Риккири Рунрун Сиаро
-Эндьюранс - Афрография Задозор Эндвокер Эндпамп Эндьюранс Эндьюрансс Эндьюрансшам Эндьюрансшп
-]]
-
--- local RG_ALTS_DB = nil
-
-local function convertToTable(selectedText)
-	local RG_ALTS_DB_DEFAULT = {}
+function AliasesNamespace.convertToTable(selectedText)
+	local alts_db = {}
 	for line in selectedText:gmatch("[^\r\n]+") do
-	  local alias, names = line:match("^(%S+)%s*-%s*(.+)$")
-	  if alias and names then
-		for name in names:gmatch("%S+") do
-		  RG_ALTS_DB_DEFAULT[name] = alias
-		end
-	  end
+	  	local alias, names = line:match("^(%S+)%s*-%s*(.+)$")
+	  	if alias and names then
+			for name in names:gmatch("%S+") do
+				alts_db[name] = alias
+			end
+	  	end
 	end
-	return RG_ALTS_DB_DEFAULT
+	return alts_db
 end
 
-local function GetRGDefault()
-	return convertToTable(initText)
+local db = {}
+function AliasesNamespace.UpdateDB()
+	db = RG_ALTS_DB
+	AliasesNamespace.db = db
 end
-
 
 local function RG_UnitName(unit)
 	local name, realm = UnitName(unit)
@@ -84,17 +48,17 @@ end
 
 local function RG_ClassColorName(unit)
 	if unit and UnitExists(unit) then
-	  local name = RG_UnitName(unit)
-	  local _, class = UnitClass(unit)
-	  if not class then
-		return name
-	  else
-		local classData = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class]
-		local coloredName = ("|c%s%s|r"):format(classData.colorStr, name)
-		return coloredName
-	  end
+		local name = RG_UnitName(unit)
+		local _, class = UnitClass(unit)
+		if not class then
+			return name
+		else
+			local classData = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class]
+			local coloredName = ("|c%s%s|r"):format(classData.colorStr, name)
+			return coloredName
+		end
 	else
-	  return "" -- ¯\_(ツ)_/¯
+	  	return "" -- ¯\_(ツ)_/¯
 	end
   end
 
@@ -103,93 +67,23 @@ _G.RG_ClassColorName = RG_ClassColorName
 
 AliasesNamespace.RG_UnitName = RG_UnitName
 AliasesNamespace.RG_ClassColorName = RG_ClassColorName
-------------------------------------------------------------------------
--- COMMS
-------------------------------------------------------------------------
 
-local function SendAliasData()
-	local chatType = IsInRaid() and "RAID" or IsInGroup() and "PARTY"
-	if not chatType then
-		return
-	end
-	local dataTable = {}
-	for char, alias in pairs(RG_ALTS_DB) do
-		dataTable[alias] = dataTable[alias] or {}
-		tinsert(dataTable[alias], char)
-	end
 
-	local dataString = ""
-	for alias, chars in pairs(dataTable) do
-		dataString = dataString .. alias .. "^"
-		for _,char in pairs(chars) do
-			dataString = dataString .. char .. "^"
-		end
-		dataString = dataString:gsub("%^$","") .. "\n"
-	end
-
-	local compressed = LibDeflate:CompressDeflate(dataString,{level = 9})
-	local encoded = LibDeflate:EncodeForWoWAddonChannel(compressed)
-	if encoded then
-		Comm:SendCommMessage("RGAliasD", encoded, chatType, nil,"BULK",
-		function(arg1,arg2,arg3)
-			AliasesNamespace.debugPrint(arg1,arg2,arg3)
-		end)
-	end
-end
-
-Comm:RegisterComm("RGAliasD", function(prefix, message, distribution, sender)
-	if distribution == "RAID" or distribution == "PARTY" then
-		local encoded = LibDeflate:DecodeForWoWAddonChannel(message)
-		local decompressed = LibDeflate:DecompressDeflate(encoded)
-
-		AliasesNamespace.print("Importing data from", sender)
-		local data = {strsplit("\n",decompressed)}
-		for i=1,#data do
-			local alias, names = strsplit("^",data[i],2)
-			if alias and names then
-				local chars = {strsplit("^",names)}
-				for j=1,#chars do
-					RG_ALTS_DB[chars[j]] = alias
-					AliasesNamespace.debugPrint("Importing", chars[j], "as", alias)
-				end
-			end
-		end
-	end
-end)
-
-local function Request()
-	local chatType = IsInRaid() and "RAID" or IsInGroup() and "PARTY"
-	if not chatType then
-		return
-	end
-	Comm:SendCommMessage("RGAliasR", "Request", chatType)
-end
-
-Comm:RegisterComm("RGAliasR", function(prefix, message, distribution, sender)
-	if distribution == "RAID" or distribution == "PARTY" then
-		-- check permissions, only send data if player is group or raid leader
-		if UnitIsGroupLeader('player') then
-			SendAliasData()
-		end
-
-	end
-end)
-
-local function ResetRG_ALTS_DB()
-	RG_ALTS_DB = GetRGDefault()
-	_G.RG_ALTS_DB = RG_ALTS_DB
+function AliasesNamespace.ResetRG_ALTS_DB()
+	RG_ALTS_DB = {}
+	AliasesNamespace.UpdateDB()
 end
 
 local modules = {
-	["blizzard"] = true,
-	["shadoweduf"] = true,
-	["vuhdo"] = true,
-	["khm"] = true,
-	["shestakui"] = true,
-	["mrtnote"] = true,
-	["mrtcd"] = true,
-	["cell"] = true,
 }
+
+function AliasesNamespace:NewModule(key,module)
+	modules[key] = module
+	return module
+end
+
+AliasesNamespace.modules = modules
+AliasesNamespace.hookedModules = {}
 local modulesString = [[
 
 modules:
@@ -241,8 +135,8 @@ addon:SetScript("OnEvent", function(self,event, ...)
 		return
 	end
 	AliasesNamespace.debugPrint("Ready")
-	RG_ALTS_DB = _G.RG_ALTS_DB or GetRGDefault()
-	_G.RG_ALTS_DB = RG_ALTS_DB
+	RG_ALTS_DB = RG_ALTS_DB or {}
+	AliasesNamespace.UpdateDB()
 
 	local currentVer = tonumber(C_AddOns.GetAddOnMetadata(GlobalAddonName, "Version"))
 
@@ -281,6 +175,8 @@ addon:SetScript("OnEvent", function(self,event, ...)
 	end
 	RG_ALTS_SETTINGS.version = currentVer
 
+	RG_ALTS_SETTINGS.SyncPlayers = RG_ALTS_SETTINGS.SyncPlayers or {}
+
 	loadModules()
 
 	self:UnregisterEvent("ADDON_LOADED")
@@ -302,14 +198,16 @@ local function handler(msg)
 			arg3 = word
 		end
 	end
-	if arg1 == "default" then
-		ResetRG_ALTS_DB()
+	if arg1 == "opt" or arg1 == "options" then
+		AliasesNamespace:ShowOptions()
+	elseif arg1 == "default" then
+		AliasesNamespace.ResetRG_ALTS_DB()
 		AliasesNamespace.print("Reseted Alts Database to Default")
 	elseif arg1 == "request" then
-		Request()
+		AliasesNamespace.Request()
 		AliasesNamespace.print("Requesting")
 	elseif arg1 == "send" then
-		SendAliasData()
+		AliasesNamespace.SendAliasData()
 		AliasesNamespace.print("Sending")
 	elseif arg1 == "add" then
 		if arg2 and arg3 then
@@ -370,7 +268,17 @@ local function handler(msg)
 			print(res[i])
 		end
 	else
-		AliasesNamespace.print("\n|cff80ff00/rgalias default\n/rgalias request\n/rgalias send\n/rgalias add <name1> <alias>\n/rgalias enable <module>\n/rgalias disable <module>\n/rgalias status|r")
+		AliasesNamespace.print(
+[[Available slash commands:
+|cff80ff00/rgalias opt|r, |cff80ff00/rgalias options|r - Open options
+|cff80ff00/rgalias default|r - Reset Alts Database to Default
+|cff80ff00/rgalias request|r - Request Alts Database from group leader
+|cff80ff00/rgalias send|r - Send Alts Database to group
+|cff80ff00/rgalias add <name1> <alias>|r - Add alias
+|cff80ff00/rgalias remove <name1>|r - Remove alias
+|cff80ff00/rgalias enable <module>|r - Enable module
+|cff80ff00/rgalias disable <module>|r - Disable module
+|cff80ff00/rgalias status|r]])
 	end
 end
 

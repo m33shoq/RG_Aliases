@@ -2,8 +2,16 @@ local GlobalAddonName = ...
 ---@class AliasesNamespace
 local AliasesNamespace = select(2, ...)
 
+local module = AliasesNamespace:NewModule("shestakui", {
+	name = "ShestakUI",
+	desc = "Changes names on ShestakUI frames",
+	addonName = "ShestakUI",
+})
+
 local function HookShestakUI()
-	if not ShestakUI then return end
+	AliasesNamespace.debugPrint("ShestakUI HOOKED")
+	AliasesNamespace.hookedModules["shestakui"] = true
+
 	local T = ShestakUI[1]
 	local Tags = ShestakUI.oUF and ShestakUI.oUF.Tags
 
@@ -36,11 +44,10 @@ local function HookShestakUI()
 		end
 		return T.UTF(name, 18, false)
 	end
-	AliasesNamespace.debugPrint("ShestakUI HOOKED")
 end
 
 function AliasesNamespace.HookShestakUI()
-	if C_AddOns.IsAddOnLoadable("ShestakUI") then
-		EventUtil.ContinueOnAddOnLoaded("ShestakUI", HookShestakUI)
+	if C_AddOns.IsAddOnLoadable(module.addonName) then
+		EventUtil.ContinueOnAddOnLoaded(module.addonName, HookShestakUI)
 	end
 end
