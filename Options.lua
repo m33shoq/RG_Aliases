@@ -9,12 +9,7 @@ local ELib = AliasesNamespace.lib
 local MLib = AliasesNamespace.MLib
 
 ---@class AliasesLocale
-local L = setmetatable({}, {__index = function (t, k)
-	t[k] = k
-	return k
-end})
-
-
+local L = AliasesNamespace.L
 
 function AliasesNamespace.ShowOptions()
 	if not AliasesNamespace.OptionsInitialized then
@@ -65,12 +60,12 @@ function AliasesNamespace.CreateOptions()
 
 
 	local modulesTooltip =
-[[Red addons are disabled,
+L[ [=[Red addons are disabled,
 green addons are enabled,
 white addons are always enabled,
-grey addons are not loaded.]]
+grey addons are not loaded.]=] ]
 	-- modules
-	OptionsFrame.ModulesDropdown = ELib:DropDown(OptionsFrame, 200, -1):Point("TOPLEFT", OptionsFrame, "TOPLEFT", 10, -35):Size(200):SetText(L["Modules"]):Tooltip(modulesTooltip)
+	OptionsFrame.ModulesDropdown = ELib:DropDown(OptionsFrame, 250, -1):Point("TOPLEFT", OptionsFrame, "TOPLEFT", 10, -35):Size(200):SetText(L["Modules"]):Tooltip(modulesTooltip)
 
 	function OptionsFrame.ModulesDropdown:SetValue(key)
 		RG_ALTS_SETTINGS.settings[key] = not RG_ALTS_SETTINGS.settings[key]
@@ -182,7 +177,7 @@ grey addons are not loaded.]]
 
 	-- alts_db with add/delete
 
-	OptionsFrame.Characters = ELib:DropDown(OptionsFrame, 200, 15):Point("TOPLEFT", OptionsFrame.ModulesDropdown, "BOTTOMLEFT", 0, -10):Size(200):SetText(L["Characters"]):Tooltip("Select character to manage alts")
+	OptionsFrame.Characters = ELib:DropDown(OptionsFrame, 200, 15):Point("TOPLEFT", OptionsFrame.ModulesDropdown, "BOTTOMLEFT", 0, -10):Size(200):SetText(L["Characters"])
 
 	function OptionsFrame.Characters.SetValue(_,alias)
 		-- show a popup with edit box to add new alt for arg1
@@ -219,28 +214,30 @@ grey addons are not loaded.]]
 				button2 = "Cancel",
 				hasEditBox = 1,
 				OnAccept = function(self)
-					local nick = self.editBox:GetText():trim()
-					StaticPopupDialogs["RGALIAS_ADD_NEW_CHARACTER2"] = {
-						text = "Enter alias for " .. nick,
-						button1 = "Add",
-						button2 = "Cancel",
-						hasEditBox = 1,
-						OnAccept = function(self)
-							local alias = self.editBox:GetText():trim()
-							if nick and nick ~= "" and alias and alias ~= "" then
-								RG_ALTS_DB[nick] = alias
-								if RGAPIDBc then
-									RGAPIDBc[nick] = alias
+					C_Timer.After(0.05, function()
+						local nick = self.editBox:GetText():trim()
+						StaticPopupDialogs["RGALIAS_ADD_NEW_CHARACTER2"] = {
+							text = "Enter alias for " .. nick,
+							button1 = "Add",
+							button2 = "Cancel",
+							hasEditBox = 1,
+							OnAccept = function(self)
+								local alias = self.editBox:GetText():trim()
+								if nick and nick ~= "" and alias and alias ~= "" then
+									RG_ALTS_DB[nick] = alias
+									if RGAPIDBc then
+										RGAPIDBc[nick] = alias
+									end
 								end
-							end
-							OptionsFrame.Characters:PreUpdate()
-							ELib.ScrollDropDown:Reload()
-						end,
-						timeout = 0,
-						whileDead = 1,
-						hideOnEscape = 1,
-					}
-					StaticPopup_Show("RGALIAS_ADD_NEW_CHARACTER2")
+								OptionsFrame.Characters:PreUpdate()
+								ELib.ScrollDropDown:Reload()
+							end,
+							timeout = 0,
+							whileDead = 1,
+							hideOnEscape = 1,
+						}
+						StaticPopup_Show("RGALIAS_ADD_NEW_CHARACTER2")
+					end)
 				end,
 				timeout = 0,
 				whileDead = 1,
@@ -297,7 +294,7 @@ grey addons are not loaded.]]
 				icon = icon,
 				iconcoord = iconcoord,
 				colorCode = colorCode,
-				tooltip = "Shift click to delete this character",
+				tooltip = L["Shift click to delete this character"],
 			}
 		end
 
@@ -308,7 +305,7 @@ grey addons are not loaded.]]
 				arg1 = alias,
 				func = OptionsFrame.Characters.SetValue,
 				subMenu = subMenu,
-				tooltip = "Click to add new alt for " .. alias,
+				tooltip = L["Click to add new alt for"] .. " " .. alias,
 				icon = "interface/guildframe/communities",
 				iconcoord = {0.2216796875,0.2529296875,0.880859375,0.943359375},
 			}
@@ -317,7 +314,7 @@ grey addons are not loaded.]]
 		tinsert(List, 1, addNew)
 	end
 
-	OptionsFrame.Senders = ELib:DropDown(OptionsFrame, 200, 2):Point("TOPLEFT", OptionsFrame.Characters, "BOTTOMLEFT", 0, -5):Size(200):SetText(L["Senders"]):Tooltip(L["Select trusted sender to manage"])
+	OptionsFrame.Senders = ELib:DropDown(OptionsFrame, 200, 2):Point("TOPLEFT", OptionsFrame.Characters, "BOTTOMLEFT", 0, -5):Size(200):SetText(L["Senders"])
 
 	function OptionsFrame.Senders.SetValue(_, sender)
 		RG_ALTS_SETTINGS.SyncPlayers[sender] = nil
@@ -336,7 +333,7 @@ grey addons are not loaded.]]
 				text = sender,
 				arg1 = sender,
 				func = OptionsFrame.Senders.SetValue,
-				tooltip = format("Click to remove %s from %q", sender, (value == 1 and L["Always accept"] or L["Always ignore"])),
+				tooltip = format(L["Click to remove %s from %q"], sender, (value == 1 and L["Always accept"] or L["Always ignore"])),
 			}
 		end
 
@@ -360,7 +357,7 @@ grey addons are not loaded.]]
 
 
 	-- send
-	OptionsFrame.Send = MLib:Button(OptionsFrame,L["Send"]):Size(123,20):Point("BOTTOMLEFT", OptionsFrame, "BOTTOMLEFT", 10, 7):Tooltip("Send alts to raid/party"):OnClick(function(self)
+	OptionsFrame.Send = MLib:Button(OptionsFrame,L["Send"]):Size(123,20):Point("BOTTOMLEFT", OptionsFrame, "BOTTOMLEFT", 10, 7):Tooltip(L["Send alts to raid/party"]):OnClick(function(self)
 		self:Disable()
 		C_Timer.After(5, function()
 			self:Enable()
@@ -376,14 +373,14 @@ grey addons are not loaded.]]
 	end)
 
 	-- request from leader
-	OptionsFrame.Request = MLib:Button(OptionsFrame,L["Request"]):Size(123,20):Point("LEFT", OptionsFrame.Send, "RIGHT", 5, 0):Tooltip("Request alts from leader"):OnClick(function()
+	OptionsFrame.Request = MLib:Button(OptionsFrame,L["Request"]):Size(123,20):Point("LEFT", OptionsFrame.Send, "RIGHT", 5, 0):Tooltip(L["Request alts from leader"]):OnClick(function()
 		AliasesNamespace.Request()
 	end)
 
 	-- reset
-	OptionsFrame.Reset = MLib:Button(OptionsFrame,L["Reset"]):Size(123,20):Point("LEFT", OptionsFrame.Request, "RIGHT", 5, 0):Tooltip("Reset alts to default"):OnClick(function()
+	OptionsFrame.Reset = MLib:Button(OptionsFrame,L["Reset"]):Size(123,20):Point("LEFT", OptionsFrame.Request, "RIGHT", 5, 0):Tooltip(L["Reset alts"]):OnClick(function()
 		StaticPopupDialogs["RGALIAS_RESET_ALTS_DB"] = {
-			text = L["Reset alts to default?"],
+			text = L["Reset alts"] .. "?",
 			button1 = "Reset",
 			button2 = "Cancel",
 			OnAccept = function()
@@ -478,11 +475,11 @@ grey addons are not loaded.]]
 
 	end
 
-	OptionsFrame.Import = MLib:Button(OptionsFrame,L["Import"]):Size(187,20):Point("BOTTOMLEFT", OptionsFrame, "BOTTOMLEFT", 10, 35):Tooltip("Import alts from string"):OnClick(function()
+	OptionsFrame.Import = MLib:Button(OptionsFrame,L["Import"]):Size(187,20):Point("BOTTOMLEFT", OptionsFrame, "BOTTOMLEFT", 10, 35):OnClick(function()
 		importWindow:Show()
 	end)
 
-	OptionsFrame.Export = MLib:Button(OptionsFrame,L["Export"]):Size(188,20):Point("LEFT", OptionsFrame.Import, "RIGHT", 5, 0):Tooltip("Export alts to string"):OnClick(function()
+	OptionsFrame.Export = MLib:Button(OptionsFrame,L["Export"]):Size(188,20):Point("LEFT", OptionsFrame.Import, "RIGHT", 5, 0):OnClick(function()
 		local lines = {}
 
 		local NickToChars = {}

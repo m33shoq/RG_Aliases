@@ -4,7 +4,7 @@ local AliasesNamespace = select(2, ...)
 
 AliasesNamespace:NewModule("elvui", {
 	name = "ElvUI",
-	desc = "Adds new tags to ElvUI",
+	desc = AliasesNamespace.L["Adds new tags to ElvUI"],
 	addonName = "ElvUI",
 	alwaysEnabled = true,
 })

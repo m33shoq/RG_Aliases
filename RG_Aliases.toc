@@ -10,6 +10,7 @@
 ## X-Wago-ID: aN0Y1v6j
 
 embeds.xml
+Locales/locales.xml
 
 Aliases.lua
 Comms.lua

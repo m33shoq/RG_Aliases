@@ -4,7 +4,7 @@ local AliasesNamespace = select(2, ...)
 
 local module = AliasesNamespace:NewModule("cell", {
 	name = "Cell",
-	desc = "Changes names on Cell frames",
+	desc = AliasesNamespace.L["Changes names on Cell frames"],
 	addonName = "Cell",
 })
 

@@ -14,7 +14,7 @@ local AliasesNamespace = select(2, ...)
 
 AliasesNamespace:NewModule("shadowuf", {
 	name = "Shadowed Unit Frames",
-	desc = "Adds custom tags to Shadowed Unit Frames",
+	desc = AliasesNamespace.L["Adds custom tags to Shadowed Unit Frames"],
 	alwaysEnabled = true,
 	addonName = "ShadowedUnitFrames",
 })

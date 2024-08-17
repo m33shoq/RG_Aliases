@@ -4,7 +4,7 @@ local AliasesNamespace = select(2, ...)
 
 AliasesNamespace:NewModule("grid2", {
 	name = "Grid2",
-	desc = "Adds new indicator to Grid2",
+	desc = AliasesNamespace.L["Adds new status to Grid2"],
 	alwaysEnabled = true,
 	addonName = "Grid2"
 })

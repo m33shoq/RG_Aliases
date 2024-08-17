@@ -4,7 +4,7 @@ local AliasesNamespace = select(2, ...)
 
 local module = AliasesNamespace:NewModule("shestakui", {
 	name = "ShestakUI",
-	desc = "Changes names on ShestakUI frames",
+	desc = AliasesNamespace.L["Changes names on ShestakUI frames"],
 	addonName = "ShestakUI",
 })
 

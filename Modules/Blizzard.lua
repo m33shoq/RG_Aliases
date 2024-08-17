@@ -4,7 +4,7 @@ local AliasesNamespace = select(2, ...)
 
 AliasesNamespace:NewModule("blizzard", {
 	name = "Blizzard Raid Frames",
-	desc = "Changes names on Blizzard Raid Frames",
+	desc = AliasesNamespace.L["Changes names on Blizzard Raid Frames"],
 	addonName = "Blizzard_CompactRaidFrames"
 })
 

@@ -4,13 +4,13 @@ local AliasesNamespace = select(2, ...)
 
 AliasesNamespace:NewModule("mrtnote", {
 	name = "MRT Note",
-	desc = "Changes names in MRT Note on screen(not in MRT Options)",
+	desc = AliasesNamespace.L["Changes names in MRT Note on screen(not in MRT Options)"],
 	addonName = "MRT"
 })
 
 AliasesNamespace:NewModule("mrtcd", {
 	name = "MRT Cooldowns",
-	desc = "Changes names on MRT Cooldown bars/icons",
+	desc = AliasesNamespace.L["Changes names on MRT Cooldown bars/icons"],
 	addonName = "MRT"
 })
 
