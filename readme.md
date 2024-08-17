@@ -22,7 +22,7 @@ Currently supported addons:
 - ShestakUI
 
 [Guide on how to setup compatible addons](https://github.com/m33shoq/RG_Aliases/wiki/Setup-guide)<br>
-[Гайд по настройке совместимых аддонов](https://github.com/m33shoq/RG_Aliases/wiki/Setup-guide-%5BRU%5D) RU
+[Гайд по настройке совместимых аддонов RU](https://github.com/m33shoq/RG_Aliases/wiki/Setup-guide-%5BRU%5D)
 
 
 Available slash commands:<br>
