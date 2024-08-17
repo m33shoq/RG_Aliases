@@ -511,7 +511,7 @@ grey addons are not loaded.]]
 	end)
 
 	-- link to github readme
-	local url = "https://github.com/WeakAuras/WeakAuras2"
+	local url = GetLocale() == "ruRU" and "https://github.com/m33shoq/RG_Aliases/wiki/Setup-guide-%5BRU%5D" or "https://github.com/m33shoq/RG_Aliases/wiki/Setup-guide"
 	OptionsFrame.Github = ELib:Edit(OptionsFrame):Size(380,20):Point("BOTTOMLEFT", OptionsFrame, "BOTTOMLEFT", 10, 65):Text(url):OnChange(function(self)
 		self:SetText(url)
 	end)

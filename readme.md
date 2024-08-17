@@ -21,8 +21,8 @@ Currently supported addons:
 - Shadowed Unit Frames
 - ShestakUI
 
-[Guide on how to setup compatible addons]()<br>
-[Детальный гайд по настройке совместимых аддонов](https://github.com/m33shoq/RG_Aliases/wiki/Setup-guide-%5BRU%5D) RU
+[Guide on how to setup compatible addons](https://github.com/m33shoq/RG_Aliases/wiki/Setup-guide)<br>
+[Гайд по настройке совместимых аддонов](https://github.com/m33shoq/RG_Aliases/wiki/Setup-guide-%5BRU%5D) RU
 
 
 Available slash commands:<br>
