@@ -1,7 +1,6 @@
 -- local GlobalAddonName = ...
 ---@class AliasesNamespace
 local AddonDB = select(2, ...)
-local MRT = GMRT
 
 ---@class MLib
 AddonDB.MLib = {}
@@ -10,7 +9,7 @@ AddonDB.MLib = {}
 local LR = AddonDB.LR
 
 ---@class ELib
-local ELib = MRT.lib
+local ELib = AliasesNamespace.lib
 
 ---@class MLib
 local MLib = AddonDB.MLib
