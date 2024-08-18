@@ -9,7 +9,7 @@ AddonDB.MLib = {}
 local LR = AddonDB.LR
 
 ---@class ELib
-local ELib = AliasesNamespace.lib
+local ELib = AddonDB.lib
 
 ---@class MLib
 local MLib = AddonDB.MLib
