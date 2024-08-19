@@ -27,11 +27,11 @@ Currently supported addons:
 
 Available slash commands:<br>
 /rgalias opt, /rgalias options - Open options<br>
-/rgalias default - Reset Alts Database to Default<br>
+/rgalias default - Reset Alts Database<br>
 /rgalias request - Request Alts Database from group leader<br>
 /rgalias send - Send Alts Database to group<br>
-/rgalias add \<name1\> \<alias\> - Add alias<br>
-/rgalias remove \<name1\> - Remove alias<br>
-/rgalias enable \<module\> - Enable module<br>
-/rgalias disable \<module\> - Disable module<br>
-/rgalias status<br>
+/rgalias add name1 alias - Add name1 as alias to Alts Database<br>
+/rgalias remove name1 - Remove name1 from Alts Database<br>
+/rgalias enable module - Enable module<br>
+/rgalias disable module - Disable module<br>
+/rgalias status - Show current settings<br>
