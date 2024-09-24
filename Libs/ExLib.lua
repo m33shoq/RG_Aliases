@@ -166,7 +166,7 @@ local isExRT = GlobalAddonName == "MRT"
 
 local libVersion = 45
 
-if type(ELib)=='table' and type(ELib.V)=='number' and ELib.V > libVersion then return end
+if isExRT and type(ELib)=='table' and type(ELib.V)=='number' and ELib.V > libVersion then return end
 
 local ELib = {}
 if isExRT then		--Disable global if not ExRT addon, only local usage
@@ -194,7 +194,7 @@ do
 			return self
 		end
 
-		if arg5 then 
+		if arg5 then
 			self:SetPoint(arg1,arg2,arg3,arg4,arg5)
 		elseif arg4 then
 			self:SetPoint(arg1,arg2,arg3,arg4)
@@ -1136,7 +1136,7 @@ do
 		self.Middle:SetTexture("Interface\\Common\\Common-Input-Border")
 		self.Middle:SetTexCoord(0.0625,0.9375,0,0.625)
 
-		self:SetFontObject("ChatFontNormal") 
+		self:SetFontObject("ChatFontNormal")
 
 		self:SetScript("OnEscapePressed",OnEscapePressed)
 		self:SetScript("OnEditFocusLost",OnEditFocusLost)
@@ -1155,7 +1155,7 @@ do
 		self.Background:SetPoint("TOPLEFT")
 		self.Background:SetPoint("BOTTOMRIGHT")
 
-		self:SetFontObject("ChatFontNormal") 
+		self:SetFontObject("ChatFontNormal")
 
 		self:SetTextInsets(4, 4, 0, 0)
 
@@ -1708,8 +1708,8 @@ end
 
 do
 	local function SliderOnMouseWheel(self,delta)
-		if tonumber(self:GetValue()) == nil then 
-			return 
+		if tonumber(self:GetValue()) == nil then
+			return
 		end
 		if self.isVertical then
 			delta = -delta
@@ -1960,15 +1960,15 @@ do
 
 	local function Widget_SetHorizontal(self)
 		self.slider:SetOrientation("HORIZONTAL")
-		self.buttonUP:ClearAllPoints() 
-		self.buttonUP:SetPoint("LEFT",0,0) 
+		self.buttonUP:ClearAllPoints()
+		self.buttonUP:SetPoint("LEFT",0,0)
 		self.buttonUP.NormalTexture:SetTexCoord(0.4375,0.5,0.5,0.625)
 		self.buttonUP.HighlightTexture:SetTexCoord(0.4375,0.5,0.5,0.625)
 		self.buttonUP.PushedTexture:SetTexCoord(0.4375,0.5,0.5,0.625)
 		self.buttonUP.DisabledTexture:SetTexCoord(0.4375,0.5,0.5,0.625)
 
-		self.buttonDown:ClearAllPoints() 
-		self.buttonDown:SetPoint("RIGHT",0,0) 
+		self.buttonDown:ClearAllPoints()
+		self.buttonDown:SetPoint("RIGHT",0,0)
 		self.buttonDown.NormalTexture:SetTexCoord(0.375,0.4375,0.5,0.625)
 		self.buttonDown.HighlightTexture:SetTexCoord(0.375,0.4375,0.5,0.625)
 		self.buttonDown.PushedTexture:SetTexCoord(0.375,0.4375,0.5,0.625)
@@ -2034,13 +2034,13 @@ do
 
 		self.buttonUP = ELib:Template(isOld and "UIPanelScrollUPButtonTemplate" or "ExRTButtonUpModernTemplate",self) or CreateFrame("Button",nil,self,isOld and "UIPanelScrollUPButtonTemplate" or "ExRTButtonUpModernTemplate")
 		self.buttonUP:SetSize(16,16)
-		self.buttonUP:SetPoint("TOP",0,0) 
+		self.buttonUP:SetPoint("TOP",0,0)
 		self.buttonUP:SetScript("OnClick",ScrollBarButtonUpClick)
 		self.buttonUP:SetScript("OnMouseDown",ScrollBarButtonUpMouseHoldDown)
 		self.buttonUP:SetScript("OnMouseUp",ScrollBarButtonUpMouseHoldUp)
 
 		self.buttonDown = ELib:Template(isOld and "UIPanelScrollDownButtonTemplate" or "ExRTButtonDownModernTemplate",self) or CreateFrame("Button",nil,self,isOld and "UIPanelScrollDownButtonTemplate" or "ExRTButtonDownModernTemplate")
-		self.buttonDown:SetPoint("BOTTOM",0,0) 
+		self.buttonDown:SetPoint("BOTTOM",0,0)
 		self.buttonDown:SetSize(16,16)
 		self.buttonDown:SetScript("OnClick",ScrollBarButtonDownClick)
 		self.buttonDown:SetScript("OnMouseDown",ScrollBarButtonDownMouseHoldDown)
@@ -2470,8 +2470,8 @@ do
 		dropDownList[#dropDownList + 1] = {
 			text = ExRT.L.BossWatcherSelectFightClose,
 			notCheckable = true,
-			func = function() 
-				CloseDropDownMenus() 
+			func = function()
+				CloseDropDownMenus()
 			end,
 		}
 		if MenuUtil then
@@ -2633,8 +2633,8 @@ do
 
 
 	function ELib:Text(parent,text,size,template)
-		if template == 0 then 
-			template = nil 
+		if template == 0 then
+			template = nil
 		elseif not template then
 			template = "ExRTFontNormal"
 		end
@@ -2845,7 +2845,7 @@ do
 			local GameFontNormal_Font = GameFontNormal:GetFont()
 			self:SetFont(GameFontNormal_Font,12,"")
 			self:SetBackdrop({bgFile = "Interface\\Buttons\\WHITE8X8",edgeFile = DEFAULT_BORDER,edgeSize = 8,tileSize = 0,insets = {left = 2.5,right = 2.5,top = 2.5,bottom = 2.5}})
-			self:SetBackdropColor(0, 0, 0, 0.8) 
+			self:SetBackdropColor(0, 0, 0, 0.8)
 			self:SetBackdropBorderColor(0.5, 0.5, 0.5, 1)
 			self:SetTextInsets(10,10,0,0)
 		end
@@ -2924,13 +2924,13 @@ do
 	end
 	local function ScrollFrameScrollBarValueChanged(self,value)
 		local parent = self:GetParent():GetParent()
-		parent:SetVerticalScroll(value) 
+		parent:SetVerticalScroll(value)
 		self:UpdateButtons()
 		CheckHideScroll(self)
 	end
 	local function ScrollFrameScrollBarValueChangedH(self,value)
 		local parent = self:GetParent():GetParent()
-		parent:SetHorizontalScroll(value) 
+		parent:SetHorizontalScroll(value)
 		self:UpdateButtons()
 	end
 	local function ScrollFrameChangeHeight(self,newHeight)
@@ -2983,7 +2983,7 @@ do
 			self.backdrop:SetBackdropColor(0,0,0,0)
 		end
 
-		self.content = CreateFrame("Frame", nil, self) 
+		self.content = CreateFrame("Frame", nil, self)
 		self:SetScrollChild(self.content)
 
 		self.isModern = not isOld
@@ -3038,7 +3038,7 @@ do
 	local function SliderBoxCreateButton(parent,text,diff)
 		local self = CreateFrame("Button",nil,parent, BackdropTemplateMixin and "BackdropTemplate")
 		self:SetBackdrop(SliderBackdropTable)
-		self:SetBackdropColor(0, 0, 0, 0.8) 
+		self:SetBackdropColor(0, 0, 0, 0.8)
 		self:SetBackdropBorderColor(0.5, 0.5, 0.5, 1)
 		self.text = self:CreateFontString(nil,"ARTWORK","GameFontNormal")
 		self.text:SetAllPoints()
@@ -3075,7 +3075,7 @@ do
 		local self = CreateFrame("Frame",nil,parent)
 		self.middle = CreateFrame("Frame",nil,self, BackdropTemplateMixin and "BackdropTemplate")
 		self.middle:SetBackdrop(SliderBackdropTable)
-		self.middle:SetBackdropColor(0, 0, 0, 0.8) 
+		self.middle:SetBackdropColor(0, 0, 0, 0.8)
 		self.middle:SetBackdropBorderColor(0.5, 0.5, 0.5, 1)
 
 		self.middle:SetScript("OnEnter",ELib.Tooltip.Std)
@@ -3109,13 +3109,13 @@ end
 
 do
 	local function ButtonOnEnter(self)
-		ELib.Tooltip.Show(self,"ANCHOR_TOP",self.tooltip,{type(self.tooltipText) == 'function' and self.tooltipText(self) or self.tooltipText,1,1,1,true}) 
+		ELib.Tooltip.Show(self,"ANCHOR_TOP",self.tooltip,{type(self.tooltipText) == 'function' and self.tooltipText(self) or self.tooltipText,1,1,1,true})
 	end
 	local function Widget_Tooltip(self,text)
 		self.tooltip = self:GetText()
 		--if self.tooltip == "" or not self.tooltip then self.tooltip = " " end
-		if self.tooltip == "" or not self.tooltip then 
-			self.tooltip = text 
+		if self.tooltip == "" or not self.tooltip then
+			self.tooltip = text
 		else
 			self.tooltipText = text
 		end
@@ -3145,7 +3145,7 @@ do
 		self.Texture:SetGradient("HORIZONTAL",CreateColor(0.20,0.21,0.25,1), CreateColor(0.05,0.06,0.09,1))
 		self.TextObj = self:GetTextObj()
 		self.TextObj:SetPoint("CENTER",-5,0)
-		
+
 		local group = self:CreateAnimationGroup()
 		group:SetScript('OnFinished', function() group:Play() end)
 		local rotation = group:CreateAnimation('Rotation')
@@ -3182,7 +3182,7 @@ do
 		return self
 	end
 	function ELib.CreateButton(parent,width,height,relativePoint,x,y,text,isDisabled,tooltip,template)
-		local self = ELib:Button(parent,text,template or 0):Size(width,height):Point(relativePoint or "TOPLEFT",x,y) 
+		local self = ELib:Button(parent,text,template or 0):Size(width,height):Point(relativePoint or "TOPLEFT",x,y)
 		if tooltip then self:Tooltip(tooltip) end
 		if isDisabled then self:Disable() end
 		return self
@@ -3310,7 +3310,7 @@ do
 		elseif not template then
 			template = "ExRTCheckButtonModernTemplate"
 		end
-		local self = ELib:Template(template,parent) or CreateFrame("CheckButton",nil,parent,template)  
+		local self = ELib:Template(template,parent) or CreateFrame("CheckButton",nil,parent,template)
 		self.text:SetText(text or "")
 		self:SetChecked(state and true or false)
 		self:SetScript("OnEnter",CheckBoxOnEnter)
@@ -3375,7 +3375,7 @@ do
 			template = "ExRTRadioButtonModernTemplate"
 		end
 
-		local self = ELib:Template(template,parent) or CreateFrame("CheckButton",nil,parent,template)  
+		local self = ELib:Template(template,parent) or CreateFrame("CheckButton",nil,parent,template)
 		self.text:SetText(text or "")
 		self:SetChecked(checked and true or false)
 
@@ -3485,7 +3485,7 @@ do
 	end
 	function ELib.CreateHelpButton(parent,helpPlateArray,isTab)
 		local self = CreateFrame("Button",nil,parent,"MainHelpPlateButton")	-- После использования кнопки не дает юзать спелл дизенчант. лень искать решение, не юзайте кнопку часто [5.4]
-		self:SetPoint("CENTER",parent,"TOPLEFT",0,0) 
+		self:SetPoint("CENTER",parent,"TOPLEFT",0,0)
 		self:SetScale(0.8)
 		local interfaceStrata = nil-- InterfaceOptionsFrame:GetFrameStrata()
 		interfaceStrata = "FULLSCREEN_DIALOG"
@@ -3524,7 +3524,7 @@ do
 				self.anim.timer:SetDuration(.25)
 				self.anim.timer.line = self
 				self.anim.timer.main = mainFrame
-				self.anim.timer:SetScript("OnUpdate", function(self,elapsed) 
+				self.anim.timer:SetScript("OnUpdate", function(self,elapsed)
 					local p = self:GetProgress()
 					local cR,cG,cB,cA = self.fR + (self.tR - self.fR) * p, self.fG + (self.tG - self.fG) * p, self.fB + (self.tB - self.fB)* p, self.fA + (self.tA - self.fA) * p
 					self.cR, self.cG, self.cB, self.cA = cR,cG,cB,cA
@@ -3783,7 +3783,7 @@ do
 		line.iconRight:SetSize(self.LINE_HEIGHT or 16,self.LINE_HEIGHT or 16)
 
 		if self.isCheckList then
-			line.chk = ELib:Template("ExRTCheckButtonModernTemplate",line)  
+			line.chk = ELib:Template("ExRTCheckButtonModernTemplate",line)
 			line.chk:SetSize(14,14)
 			line.chk:SetPoint("LEFT",4,0)
 			line.chk:SetScript("OnClick", ScrollList_Check_Click)
@@ -3807,7 +3807,7 @@ do
 
 	local function ScrollList_ScrollBar_OnValueChanged(self,value)
 		local parent = self:GetParent():GetParent()
-		parent:SetVerticalScroll(value % (parent:GetParent().LINE_HEIGHT or 16)) 
+		parent:SetVerticalScroll(value % (parent:GetParent().LINE_HEIGHT or 16))
 		self:UpdateButtons()
 
 		parent:GetParent():Update()
@@ -3818,7 +3818,7 @@ do
 		for i=val,#self.L do
 			j = j + 1
 			local line = self.List[j]
-			if not line then 
+			if not line then
 				line = ScrollList_AddLine(self,j)
 			end
 			if not self.T then
@@ -4099,11 +4099,11 @@ do
 		self:SetMovable(true)
 		self:RegisterForDrag("LeftButton")
 		self:SetDontSavePosition(true)
-		self:SetScript("OnDragStart", function(self) 
-			self:StartMoving() 
+		self:SetScript("OnDragStart", function(self)
+			self:StartMoving()
 		end)
-		self:SetScript("OnDragStop", function(self) 
-			self:StopMovingOrSizing() 
+		self:SetScript("OnDragStop", function(self)
+			self:StopMovingOrSizing()
 		end)
 		self:Hide()
 		self:SetScript("OnShow", PopupFrameOnShow)
@@ -4458,7 +4458,7 @@ do
 		else
 			dropDown.Buttons[i]:SetPoint("TOPLEFT",18,-16 - (i-1) * 16)
 		end
-		dropDown.Buttons[i].NormalText:SetMaxLines(1) 
+		dropDown.Buttons[i].NormalText:SetMaxLines(1)
 
 		if dropDown.isModern then
 			dropDown.Buttons[i].checkButton = ELib:Template("ExRTCheckButtonModernTemplate",dropDown.Buttons[i])
@@ -4743,7 +4743,7 @@ function ELib.ScrollDropDown.ToggleDropDownMenu(self,level,customList,customWidt
 	dropDown.MaxLines = max(dropDown.MaxLines,maxLinesNow)
 
 	local isSliderHidden = max(count-maxLinesNow+1,1) == 1
-	if isModern then 
+	if isModern then
 		for i=1,maxLinesNow do
 			dropDown.Buttons[i]:SetSize(dropDownWidth - 16 - (isSliderHidden and 0 or 12),16)
 		end
@@ -4761,7 +4761,7 @@ function ELib.ScrollDropDown.ToggleDropDownMenu(self,level,customList,customWidt
 	dropDown:ClearAllPoints()
 	dropDown:SetPoint("TOPRIGHT",self,"BOTTOMRIGHT",-16,0)
 	dropDown.Slider:SetMinMaxValues(1,max(count-maxLinesNow+1,1))
-	if isModern then 
+	if isModern then
 		dropDown:SetSize(dropDownWidth,16 + 16 * maxLinesNow)
 		dropDown.Slider:SetHeight(maxLinesNow * 16)
 	else
@@ -5906,7 +5906,7 @@ do
 		self.EditBox = ELib:Edit(self.C,nil,nil,1):Point("TOPLEFT",self.C,0,0):Point("TOPRIGHT",self.C,0,0):OnChange(MultilineEditBoxOnTextChanged)
 
 		self.EditBox.Parent = self
-		self.EditBox:SetMultiLine(true) 
+		self.EditBox:SetMultiLine(true)
 		self.EditBox:SetBackdropColor(0, 0, 0, 0)
 		self.EditBox:SetBackdropBorderColor(0, 0, 0, 0)
 		self.EditBox:SetTextInsets(5,5,2,2)
@@ -6197,7 +6197,7 @@ do
 				end
 
 				media:SetPoint("TOP",self.axisX,"BOTTOMLEFT",(i-1)*per_col + per_col/2,-2)
-				local textX = self.TextX and self:TextX(i,d) or i 
+				local textX = self.TextX and self:TextX(i,d) or i
 				media:SetText(textX)
 				media:Show()
 
@@ -6297,7 +6297,7 @@ function ELib:DecorationLine(parent,isGradient,layer,layerCounter)
 	return self
 end
 
-do 
+do
 	local function Widget_SetSize(self,width,height)
 		self.Width = width - 16
 		self.Height = height
@@ -6512,7 +6512,7 @@ do
 		button:Point("TOP",0,-topStart):Size(self.Width - 10 * (parent and 2 or 1),30)
 
 		local isUpdateReqPre = isUpdateReq
-		
+
 		isUpdateReq = isUpdateReq or (button.uid ~= button.prevUid) or CheckStateExpandChanged(self,uid,button.sub) or CheckStateExpandChangedChilds(self,uid,now.data)
 		if isUpdateReq then
 			button:SetText(now.name or "")
@@ -6522,11 +6522,11 @@ do
 			end
 		end
 		button:Show()
-	
+
 		local subTop = 0
 		if self.stateExpand[uid] then
 			subTop = 5
-	
+
 			local subData = now.data
 			local widthNow = 0
 			if subData then
@@ -6538,7 +6538,7 @@ do
 					elseif subNow == 1 then
 						widthNow = 0
 						subTop = subTop + BUTTON_HEIGHT + 5
-	
+
 						local line = GetLine(self,subNow..tostring(subData))
 						if isUpdateReq then
 							line:SetParent(button.sub)
@@ -6547,7 +6547,7 @@ do
 						line:Show()
 					elseif type(subNow) == "table" and subNow.isSubData then
 						widthNow = 0
-	
+
 						local expandHeight = UpdateT1Button(self,subNow,isUpdateReqPre,subTop,BUTTON_HEIGHT,GROUP_HEIGHT,buttonWidth-5,button.sub)
 
 						subTop = subTop + 30 + expandHeight + 5
@@ -6556,7 +6556,7 @@ do
 							widthNow = 0
 							subTop = subTop + BUTTON_HEIGHT + 5
 						end
-	
+
 						local groupText = GetGroupText(self,subNow..tostring(subData))
 						if isUpdateReq then
 							groupText:SetParent(button.sub)
@@ -6564,7 +6564,7 @@ do
 							groupText:SetText(subNow)
 						end
 						groupText:Show()
-	
+
 						subTop = subTop + GROUP_HEIGHT + 5
 					else
 						local subUid = subNow.uid or subNow.name
@@ -6575,20 +6575,20 @@ do
 							subButton:Point("TOPLEFT",5+widthNow,-subTop):Size(buttonWidth,BUTTON_HEIGHT)
 							subButton:SetText(subNow.name or "")
 							subButton.data = subNow
-	
+
 							if subNow.drag then
 								subButton:SetMovable(true)
 								subButton:RegisterForDrag("LeftButton")
 							else
 								subButton:SetMovable(false)
 							end
-	
+
 							if self.ModButtonUpdate then
 								self:ModButtonUpdate(subButton,2)
 							end
 						end
 						subButton:Show()
-	
+
 						widthNow = widthNow + buttonWidth + 10
 						if widthNow >= (self.Width - 20) then
 							widthNow = 0
@@ -6597,7 +6597,7 @@ do
 					end
 				end
 			end
-	
+
 			if isUpdateReq then
 				button.expandIcon.texture:SetTexCoord(0.25,0.3125,0.5,0.625)
 				button.sub:Show()
@@ -6613,7 +6613,7 @@ do
 
 		return subTop
 	end
-	
+
 	local function CalculateHeight(self,subData,BUTTON_HEIGHT,GROUP_HEIGHT,buttonWidth)
 		local subTop = 5
 		local widthNow = 0
@@ -6641,7 +6641,7 @@ do
 					widthNow = 0
 					subTop = subTop + BUTTON_HEIGHT + 5
 				end
-	
+
 				subTop = subTop + GROUP_HEIGHT + 5
 			else
 				widthNow = widthNow + buttonWidth + 5
@@ -6752,7 +6752,7 @@ do
 	end
 	local function Widget_ScrollOnChange(self,value)
 		local parent = self:GetParent():GetParent()
-		parent:Update() 
+		parent:Update()
 		self:UpdateButtons()
 	end
 	local function Widget_ResetScrollPos(self)
