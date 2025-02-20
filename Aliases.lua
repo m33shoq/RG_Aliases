@@ -95,6 +95,7 @@ ShestakUI
 MRTNote
 MRTCD
 Cell
+WeakAuras
 ]]
 
 local function loadModules()
@@ -124,6 +125,10 @@ local function loadModules()
 
 	if RG_ALTS_SETTINGS.settings["cell"] then
 		AliasesNamespace.HookCell()
+	end
+
+	if RG_ALTS_SETTINGS.settings["weakauras"] then
+		AliasesNamespace.HookWeakAuras()
 	end
 end
 
