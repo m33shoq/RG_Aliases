@@ -20,6 +20,9 @@ AliasesNamespace:NewModule("shadowuf", {
 })
 
 function AliasesNamespace.HookSUF()
+	if not C_AddOns.IsAddOnLoadable("ShadowedUnitFrames") then
+		return
+	end
 	-- options
 	EventUtil.ContinueOnAddOnLoaded("ShadowedUF_Options", function()
 		AliasesNamespace.debugPrint("SUF TAGS LOADED AS CUSTOM TAGS")
@@ -28,7 +31,7 @@ function AliasesNamespace.HookSUF()
 
 		ShadowUF.db.profile.tags["RG_Name"] = {
 			["func"] = [[function(unit, unitOwner)
-				return RG_UnitName and RG_UnitName(unitOwner) or UnitName(unitOwner) or UNKNOWN
+return RG_UnitName and RG_UnitName(unitOwner) or UnitName(unitOwner) or UNKNOWN
 			end]],
 			["events"] = "UNIT_NAME_UPDATE",
 			["name"] = "RG Alias",
@@ -37,12 +40,12 @@ function AliasesNamespace.HookSUF()
 		}
 		ShadowUF.db.profile.tags["RG_Name_ClassColored"] = {
 			["func"] = [[function(unit, unitOwner)
-				local color = ShadowUF:GetClassColor(unitOwner)
-				local name = RG_UnitName and RG_UnitName(unitOwner) or UnitName(unitOwner) or UNKNOWN
-				if not color then
-					return name
-				end
-				return string.format("%s%s|r", color, name)
+local color = ShadowUF:GetClassColor(unitOwner)
+local name = RG_UnitName and RG_UnitName(unitOwner) or UnitName(unitOwner) or UNKNOWN
+if not color then
+	return name
+end
+return string.format("%s%s|r", color, name)
 			end]],
 			["events"] = "UNIT_NAME_UPDATE",
 			["name"] = "RG Alias(Class colored)",
@@ -85,3 +88,5 @@ function AliasesNamespace.HookSUF()
 		-- end]]
 	end)
 end
+
+AliasesNamespace.HookSUF()

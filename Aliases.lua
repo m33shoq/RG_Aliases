@@ -99,10 +99,6 @@ WeakAuras
 ]]
 
 local function loadModules()
-	if RG_ALTS_SETTINGS.settings["shadoweduf"] then
-		AliasesNamespace.HookSUF()
-	end
-
 	if RG_ALTS_SETTINGS.settings["blizzard"] then
 		AliasesNamespace.HookBlizzard()
 	end
