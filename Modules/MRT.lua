@@ -23,9 +23,13 @@ local function RaidCooldowns_Bar_TextName(eventName,bar,gsub_data,barData)
 	local customName = RG_ALTS_DB[name] or name
 
 	if barParent.textShowTargetName and barData.targetName then
+		local targetName = RG_ALTS_DB[barData.targetName] or barData.targetName
 		local time = (bar.curr_end or 0) - GetTime() + 1
+		if barParent.methodsTextIgnoreActive then
+			time = (bar.curr_end_cd or 0) - GetTime() + 1
+		end
 		if time >=1 then
-			customName = customName .. " > " .. barData.targetName
+			customName = customName .. " > " .. targetName
 		end
 	end
 	if barData.specialAddText then
@@ -39,19 +43,27 @@ local function RaidCooldowns_Bar_TextName(eventName,bar,gsub_data,barData)
 	end
 end
 
+local SEP = " ,\n\r:%{%}%(%)%+%[%]\"%@%!%$%_%#%&"
+local PAT_SEP =  "[" .. SEP .. "]"
+local PAT_SEP_INVERSE = "[^" .. SEP .. "]+"
+local PAT_SEP_CAPTURE = "(" .. PAT_SEP .. ")"
+
 local function Note_UpdateText(eventName,noteFrame)
     local text = noteFrame.text:GetText()
 	if not text then return end
 	local words = {}
-	for colorCode, word in text:gmatch("|c(%x%x%x%x%x%x%x%x)(.-)|r") do -- match all color coded phrases
-		if not words[word] then
-			words[word] = {
-				colorCode = colorCode,
-				translatedWord = RG_ALTS_DB[word] or word
-			}
-		end
-		if words[word].translatedWord ~= word then
-			text = text:gsub("|c%x%x%x%x%x%x%x%x"..word.."|r", "|c"..words[word].colorCode..words[word].translatedWord.."|r")
+	for w in text:gmatch(PAT_SEP_INVERSE) do -- match all separate words
+		local colorCode = w:match("|c(%x%x%x%x%x%x%x%x)")
+		local word = w:gsub("||", "|"):gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", ""):gsub("|", "")
+		if RG_ALTS_DB[word] and not words[w] then
+			words[w] = true
+			if not colorCode then
+				local class = UnitClassBase(word)
+				if class then
+					colorCode = RAID_CLASS_COLORS[class].colorStr
+				end
+			end
+			text = text:gsub(w, colorCode and ("|c" .. colorCode  .. RG_ALTS_DB[word] .. "|r") or RG_ALTS_DB[word])
 		end
 	end
 	if text ~= noteFrame.text:GetText() then
