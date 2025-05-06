@@ -23,7 +23,7 @@ local function RaidCooldowns_Bar_TextName(eventName,bar,gsub_data,barData)
 	local customName = RG_ALTS_DB[name] or name
 
 	if barParent.textShowTargetName and barData.targetName then
-		local targetName = RG_ALTS_DB[barData.targetName] or barData.targetName
+		local targetName = RG_ALTS_DB[strsplit("-",barData.targetName)] or barData.targetName
 		local time = (bar.curr_end or 0) - GetTime() + 1
 		if barParent.methodsTextIgnoreActive then
 			time = (bar.curr_end_cd or 0) - GetTime() + 1
@@ -87,6 +87,7 @@ AliasesNamespace.HookMRTNote = function()
 	if C_AddOns.IsAddOnLoadable("MRT") then
 		EventUtil.ContinueOnAddOnLoaded("MRT", function()
 			GMRT.F:RegisterCallback("Note_UpdateText", Note_UpdateText)
+			GMRT.A.Note.frame:UpdateText()
 		end)
 	end
 end
