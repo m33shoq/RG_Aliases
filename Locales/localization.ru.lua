@@ -46,3 +46,7 @@ L["Changes names in MRT Note on screen(not in MRT Options)"] = "Замена н�
 L["Changes names on MRT Cooldown bars/icons"] = "Замена ников на полосах/иконках MRT Рейд кулданов"
 L["Adds custom tags to Shadowed Unit Frames"] = "Добавляет пользовательские теги в Shadowed Unit Frames"
 L["Changes names on ShestakUI frames"] = "Замена ников на фреймах ShestakUI"
+L["Changes names on Cell frames"] = "Замена ников на фреймах Cell"
+L["Changes names formatted by WeakAuras"] = "Замена ников форматируемых WeakAuras"
+L["Changes names on RaidFrameSettings' Frames."] = "Замена ников на фреймах RaidFrameSettings."
+L["RFSDisalbeTip"] = "Отключение RakGamingAliases не отключит замену ников на фреймах RaidFrameSettings.\nДля того что-бы убрать замену ников выключите модуль RaidFrameSettings в RakGamingAliases."

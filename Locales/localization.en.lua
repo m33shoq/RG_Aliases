@@ -50,3 +50,7 @@ L["Changes names in MRT Note on screen(not in MRT Options)"] = "Changes names in
 L["Changes names on MRT Cooldown bars/icons"] = "Changes names on MRT Cooldown bars/icons"
 L["Adds custom tags to Shadowed Unit Frames"] = "Adds custom tags to Shadowed Unit Frames"
 L["Changes names on ShestakUI frames"] = "Changes names on ShestakUI frames"
+L["Changes names on Cell frames"] = "Changes names on Cell frames"
+L["Changes names formatted by WeakAuras"] = "Changes names formatted by WeakAuras"
+L["Changes names on RaidFrameSettings' Frames."] = "Changes names on RaidFrameSettings' Frames."
+L["RFSDisalbeTip"] = "Disabling RakGamingAliases will not remove aliases from RaidFrameSettings' frames.\nTo remove aliases disable RaidFrameSettings module in RakGamingAliases."

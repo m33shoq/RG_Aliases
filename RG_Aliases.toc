@@ -1,7 +1,7 @@
-## Interface: 110007, 110100
+## Interface: 110107
 ## Title: Rak Gaming Aliases
 ## Author: m33shoq
-## Version: 13
+## Version: 14
 ## SavedVariables: RG_ALTS_DB, RG_ALTS_SETTINGS
 ## AddonCompartmentFunc: RGALIAS_MinimapClickFunction
 ## IconTexture: Interface\AddOns\RG_Aliases\logo.png
@@ -25,3 +25,4 @@ Modules/ShestakUI.lua
 Modules/MRT.lua
 Modules/Cell.lua
 Modules/WeakAuras.lua
+Modules/RaidFrameSettings.lua

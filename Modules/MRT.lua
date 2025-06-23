@@ -16,7 +16,7 @@ AliasesNamespace:NewModule("mrtcd", {
 
 local function RaidCooldowns_Bar_TextName(eventName,bar,gsub_data,barData)
 	-- DevTool:AddData(barData)
-    --actual name is barData.fullName or barData.name [w/o server]
+    --actual name is barData.fullName or barData.name [Ambiguated?]
 
 	local barParent = bar.parent
 	local name = barData.name

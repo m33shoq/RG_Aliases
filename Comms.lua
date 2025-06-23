@@ -49,13 +49,17 @@ Comm:RegisterComm("RGAliasD", function(prefix, message, distribution, sender)
 
 		AliasesNamespace.print("Importing data from", sender)
 		local data = {strsplit("\n",decompressed)}
+
 		for i=1,#data do
 			local alias, names = strsplit("^",data[i],2)
 			if alias and names then
 				local chars = {strsplit("^",names)}
 				for j=1,#chars do
-					RG_ALTS_DB[chars[j]] = alias
-					AliasesNamespace.debugPrint("Importing", chars[j], "as", alias)
+					local name = chars[j]
+					if RG_ALTS_DB[name] ~= alias then
+						AliasesNamespace.addCharacter(name, alias)
+						AliasesNamespace.debugPrint("Importing", name, "as", alias)
+					end
 				end
 			end
 		end

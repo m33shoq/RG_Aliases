@@ -49,7 +49,8 @@
 		"NO",
 		"DECLINE",
 		"ACCEPT",
-		"ALWAYS"
+		"ALWAYS",
+		"CANCEL"
 	],
     "Lua.diagnostics.disable": [
 		"lowercase-global",
@@ -88,9 +89,6 @@
 		"C:\\_Games\\World of Warcraft\\_retail_\\Interface\\AddOns\\MRT",
 		"C:\\_Games\\GitRepos\\WeakAuras2",
 		"C:\\_Games\\GitRepos\\ExRT_Reminder",
-		"~\\.vscode\\extensions\\ketho.wow-api-0.20.1\\Annotations\\Core",
-		"~\\.vscode\\extensions\\ketho.wow-api-0.20.1\\Annotations\\Libraries",
-		"~\\.vscode\\extensions\\ketho.wow-api-0.20.1\\Annotations\\Lua",
-		"~\\.vscode\\extensions\\ketho.wow-api-0.20.1\\Annotations\\FrameXML\\Manual"
+		"~\\.vscode\\extensions\\ketho.wow-api-0.20.8\\Annotations\\Core"
 	]
   }

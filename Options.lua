@@ -68,21 +68,14 @@ grey addons are not loaded.]=] ]
 	OptionsFrame.ModulesDropdown = ELib:DropDown(OptionsFrame, 250, -1):Point("TOPLEFT", OptionsFrame, "TOPLEFT", 10, -35):Size(200):SetText(L["Modules"]):Tooltip(modulesTooltip)
 
 	function OptionsFrame.ModulesDropdown:SetValue(key)
-		RG_ALTS_SETTINGS.settings[key] = not RG_ALTS_SETTINGS.settings[key]
+		if RG_ALTS_SETTINGS.settings[key] then
+			AliasesNamespace.disableModule(key)
+		else
+			AliasesNamespace.enableModule(key)
+		end
 
 		OptionsFrame.ModulesDropdown:PreUpdate()
 		ELib.ScrollDropDown:Reload()
-
-		StaticPopupDialogs["RGALIAS_RELOADUI"] = {
-			text = L["Reload UI to apply changes?"],
-			button1 = "Reload",
-			button2 = "Cancel",
-			OnAccept = ReloadUI,
-			timeout = 0,
-			whileDead = 1,
-			hideOnEscape = 1,
-		}
-		StaticPopup_Show("RGALIAS_RELOADUI")
 	end
 
 	local icons = {
@@ -189,10 +182,7 @@ grey addons are not loaded.]=] ]
 			OnAccept = function(self)
 				local text = self.editBox:GetText():trim()
 				if text and text ~= "" then
-					RG_ALTS_DB[text] = alias
-					if RGAPIDBc then
-						RGAPIDBc[text] = alias
-					end
+					AliasesNamespace.addCharacter(text, alias)
 				end
 				OptionsFrame.Characters:PreUpdate()
 				ELib.ScrollDropDown:Reload(2)
@@ -215,19 +205,16 @@ grey addons are not loaded.]=] ]
 				hasEditBox = 1,
 				OnAccept = function(self)
 					C_Timer.After(0.05, function()
-						local nick = self.editBox:GetText():trim()
+						local name = self.editBox:GetText():trim()
 						StaticPopupDialogs["RGALIAS_ADD_NEW_CHARACTER2"] = {
-							text = "Enter alias for " .. nick,
+							text = "Enter alias for " .. name,
 							button1 = "Add",
 							button2 = "Cancel",
 							hasEditBox = 1,
 							OnAccept = function(self)
 								local alias = self.editBox:GetText():trim()
-								if nick and nick ~= "" and alias and alias ~= "" then
-									RG_ALTS_DB[nick] = alias
-									if RGAPIDBc then
-										RGAPIDBc[nick] = alias
-									end
+								if name and name ~= "" and alias and alias ~= "" then
+									AliasesNamespace.addCharacter(name, alias)
 								end
 								OptionsFrame.Characters:PreUpdate()
 								ELib.ScrollDropDown:Reload()
@@ -247,12 +234,9 @@ grey addons are not loaded.]=] ]
 		end
 	}
 
-	function OptionsFrame.Characters.SubMenuSetValue(_,nick)
+	function OptionsFrame.Characters.SubMenuSetValue(_,name)
 		if IsShiftKeyDown() then
-			RG_ALTS_DB[nick] = nil
-			if RGAPIDBc then
-				RGAPIDBc[nick] = nil
-			end
+			AliasesNamespace.removeCharacter(name)
 			OptionsFrame.Characters:PreUpdate()
 			ELib.ScrollDropDown:Reload(2)
 			ELib.ScrollDropDown:Reload(1)
@@ -508,12 +492,12 @@ grey addons are not loaded.]=] ]
 	end)
 
 	-- link to github readme
-	local url = GetLocale() == "ruRU" and "https://github.com/m33shoq/RG_Aliases/wiki/Setup-guide-%5BRU%5D" or "https://github.com/m33shoq/RG_Aliases/wiki/Setup-guide"
-	OptionsFrame.Github = ELib:Edit(OptionsFrame):Size(380,20):Point("BOTTOMLEFT", OptionsFrame, "BOTTOMLEFT", 10, 65):Text(url):OnChange(function(self)
-		self:SetText(url)
+	local setupURL = GetLocale() == "ruRU" and "https://github.com/m33shoq/RG_Aliases/wiki/Setup-guide-RU" or "https://github.com/m33shoq/RG_Aliases/wiki/Setup-guide"
+	OptionsFrame.Github = ELib:Edit(OptionsFrame):Size(380,20):Point("BOTTOMLEFT", OptionsFrame, "BOTTOMLEFT", 10, 65):Text(setupURL):OnChange(function(self)
+		self:SetText(setupURL)
 	end)
 	OptionsFrame.Github:SetScript("OnKeyDown", function(self, key)
-		self:SetText(url)
+		self:SetText(setupURL)
 		self:HighlightText()
 		if key == "C" and IsControlKeyDown() then
 			C_Timer.After(0.1, function()
@@ -524,4 +508,20 @@ grey addons are not loaded.]=] ]
 	end)
 	ELib:Text(OptionsFrame,L["Setup guide:"]):Point("BOTTOMLEFT",OptionsFrame.Github,"TOPLEFT",0,5):SetFont("Fonts\\FRIZQT__.TTF",12,"OUTLINE")
 
+	-- link to discord
+	local discordURL = "https://discord.gg/dmqVFvU4qv"
+	OptionsFrame.Discord = ELib:Edit(OptionsFrame):Size(380,20):Point("TOPLEFT", OptionsFrame.Github, "TOPLEFT", 0, 45):Text(discordURL):OnChange(function(self)
+		self:SetText(discordURL)
+	end)
+	OptionsFrame.Discord:SetScript("OnKeyDown", function(self, key)
+		self:SetText(discordURL)
+		self:HighlightText()
+		if key == "C" and IsControlKeyDown() then
+			C_Timer.After(0.1, function()
+				self:HighlightText(0,0)
+				self:ClearFocus()
+			end)
+		end
+	end)
+	ELib:Text(OptionsFrame,L["Discord:"]):Point("BOTTOMLEFT",OptionsFrame.Discord,"TOPLEFT",0,5):SetFont("Fonts\\FRIZQT__.TTF",12,"OUTLINE")
 end
