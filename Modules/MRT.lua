@@ -76,7 +76,9 @@ AliasesNamespace.HookMRTCD = function()
 	AliasesNamespace.hookedModules["mrtcd"] = true
 	if C_AddOns.IsAddOnLoadable("MRT") then
 		EventUtil.ContinueOnAddOnLoaded("MRT", function ()
-			GMRT.F:RegisterCallback("RaidCooldowns_Bar_TextName", RaidCooldowns_Bar_TextName)
+			C_Timer.After(0.1, function()
+				GMRT.F:RegisterCallback("RaidCooldowns_Bar_TextName", RaidCooldowns_Bar_TextName)
+			end)
 		end)
 	end
 end
@@ -86,8 +88,10 @@ AliasesNamespace.HookMRTNote = function()
 	AliasesNamespace.hookedModules["mrtnote"] = true
 	if C_AddOns.IsAddOnLoadable("MRT") then
 		EventUtil.ContinueOnAddOnLoaded("MRT", function()
-			GMRT.F:RegisterCallback("Note_UpdateText", Note_UpdateText)
-			GMRT.A.Note.frame:UpdateText()
+			C_Timer.After(0.1, function()
+				GMRT.F:RegisterCallback("Note_UpdateText", Note_UpdateText)
+				GMRT.A.Note.frame:UpdateText()
+			end)
 		end)
 	end
 end
