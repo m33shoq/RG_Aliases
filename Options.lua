@@ -180,7 +180,8 @@ grey addons are not loaded.]=] ]
 			button2 = "Cancel",
 			hasEditBox = 1,
 			OnAccept = function(self)
-				local text = self.editBox:GetText():trim()
+				local editBox = self.editBox or self.EditBox
+				local text = editBox:GetText():trim()
 				if text and text ~= "" then
 					AliasesNamespace.addCharacter(text, alias)
 				end
@@ -205,14 +206,16 @@ grey addons are not loaded.]=] ]
 				hasEditBox = 1,
 				OnAccept = function(self)
 					C_Timer.After(0.05, function()
-						local name = self.editBox:GetText():trim()
+						local editBox = self.editBox or self.EditBox
+						local name = editBox:GetText():trim()
 						StaticPopupDialogs["RGALIAS_ADD_NEW_CHARACTER2"] = {
 							text = "Enter alias for " .. name,
 							button1 = "Add",
 							button2 = "Cancel",
 							hasEditBox = 1,
 							OnAccept = function(self)
-								local alias = self.editBox:GetText():trim()
+								local editBox = self.editBox or self.EditBox
+								local alias = editBox:GetText():trim()
 								if name and name ~= "" and alias and alias ~= "" then
 									AliasesNamespace.addCharacter(name, alias)
 								end

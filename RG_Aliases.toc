@@ -1,7 +1,7 @@
-## Interface: 110107
+## Interface: 110107, 110200
 ## Title: Rak Gaming Aliases
 ## Author: m33shoq
-## Version: 15
+## Version: 16
 ## SavedVariables: RG_ALTS_DB, RG_ALTS_SETTINGS
 ## AddonCompartmentFunc: RGALIAS_MinimapClickFunction
 ## IconTexture: Interface\AddOns\RG_Aliases\logo.png
