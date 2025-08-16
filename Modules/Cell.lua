@@ -18,8 +18,32 @@ function AliasesNamespace.HookCell()
 			local F = Cell.funcs
 			local RG_UnitName = AliasesNamespace.RG_UnitName
 
-			F.GetNickname = function(shortName,fullName)
-				return fullName and RG_UnitName(fullName) or shortName and RG_UnitName(shortName) or shortName or _G.UNKNOWNOBJECT
+
+			-- special request by Mate
+			if RG_ALTS_SETTINGS["cell_use_own_nickname"] then
+				local playerName = UnitName("player")
+
+				local function Cell_UnitName(name)
+					if name == playerName then
+						if _G.CellDB and _G.CellDB["nicknames"] and _G.CellDB["nicknames"]["mine"] then
+							local cellNick = _G.CellDB["nicknames"]["mine"]
+							if cellNick and cellNick ~= "" then
+								return cellNick
+							end
+						end
+						return name
+					end
+
+					return RG_UnitName(name)
+				end
+
+				F.GetNickname = function(shortName,fullName)
+					return fullName and Cell_UnitName(fullName) or shortName and Cell_UnitName(shortName) or shortName or _G.UNKNOWNOBJECT
+				end
+			else
+				F.GetNickname = function(shortName,fullName)
+					return fullName and RG_UnitName(fullName) or shortName and RG_UnitName(shortName) or shortName or _G.UNKNOWNOBJECT
+				end
 			end
 		end)
 	end
