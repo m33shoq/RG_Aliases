@@ -205,9 +205,9 @@ grey addons are not loaded.]=] ]
 				button2 = "Cancel",
 				hasEditBox = 1,
 				OnAccept = function(self)
+					local editBox = self.editBox or self.EditBox
+					local name = editBox:GetText():trim()
 					C_Timer.After(0.05, function()
-						local editBox = self.editBox or self.EditBox
-						local name = editBox:GetText():trim()
 						StaticPopupDialogs["RGALIAS_ADD_NEW_CHARACTER2"] = {
 							text = "Enter alias for " .. name,
 							button1 = "Add",
