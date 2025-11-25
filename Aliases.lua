@@ -35,6 +35,26 @@ function AliasesNamespace.convertToTable(selectedText)
 	return alts_db
 end
 
+function RG_ALIASES_SET_ALTS_DB(char_db)
+	RG_ALTS_DB = setmetatable(char_db or {}, {
+		__index = function(t, k)
+			local GUID = k and UnitGUID(k)
+
+			local bFriend = GUID and C_BattleNet.GetAccountInfoByGUID(GUID)
+			if bFriend and bFriend.battleTag then
+				local alias = rawget(t, bFriend.battleTag)
+				if alias then
+					return alias
+				end
+			end
+
+			return nil
+		end
+	})
+
+	AliasesNamespace.UpdateDB()
+end
+
 local db = {}
 function AliasesNamespace.UpdateDB()
 	db = RG_ALTS_DB
@@ -88,8 +108,7 @@ function AliasesNamespace.RegisterCallback(event, callback)
 end
 
 function AliasesNamespace.ResetRG_ALTS_DB()
-	RG_ALTS_DB = {}
-	AliasesNamespace.UpdateDB()
+	RG_ALIASES_SET_ALTS_DB({})
 end
 
 local modules = {
@@ -155,6 +174,7 @@ local function loadModules()
 end
 local addon = CreateFrame("Frame")
 addon:RegisterEvent("ADDON_LOADED")
+-- addon:RegisterEvent("PLAYER_LOGOUT")
 AliasesNamespace.mainFrame = addon
 addon:SetScript("OnEvent", function(self,event, ...)
 	if event == "ADDON_LOADED" then
@@ -164,8 +184,7 @@ addon:SetScript("OnEvent", function(self,event, ...)
 		end
 
 		AliasesNamespace.debugPrint("Ready")
-		RG_ALTS_DB = RG_ALTS_DB or {}
-		AliasesNamespace.UpdateDB()
+		RG_ALIASES_SET_ALTS_DB(RG_ALTS_DB or {})
 
 		local currentVer = tonumber(C_AddOns.GetAddOnMetadata(GlobalAddonName, "Version"))
 

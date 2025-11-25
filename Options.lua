@@ -451,8 +451,7 @@ grey addons are not loaded.]=] ]
 		AliasesNamespace.print("Importing alts from string")
 
 		local def = AliasesNamespace.convertToTable(str)
-		RG_ALTS_DB = def
-		AliasesNamespace.UpdateDB()
+		RG_ALIASES_SET_ALTS_DB(def)
 
 		for k,v in pairs(def) do
 			if RGAPIDBc then
