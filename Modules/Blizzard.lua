@@ -101,8 +101,14 @@ local function UpdateNameOverride(self)
 	return true
 end
 
+local MODULE_DISABLED = false
+function AliasesNamespace:DisableBlizzardHook()
+	MODULE_DISABLED = true
+	AliasesNamespace.debugPrint("Blizzard frames UNHOOKED")
+end
+
 local function CUF_UpdateNameHook(frame)
-	if frame and not frame:IsForbidden() then
+	if not MODULE_DISABLED and frame and not frame:IsForbidden() then
 		local frame_name = frame:GetName()
 
 		if frame_name and

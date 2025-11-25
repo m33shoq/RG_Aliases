@@ -148,6 +148,10 @@ local function loadModules()
 	if RG_ALTS_SETTINGS.settings["rfs"] then
 		AliasesNamespace.HookRFS()
 	end
+
+	if RG_ALTS_SETTINGS.settings["dandersframes"] then
+		AliasesNamespace.HookDandersFrames()
+	end
 end
 local addon = CreateFrame("Frame")
 addon:RegisterEvent("ADDON_LOADED")
