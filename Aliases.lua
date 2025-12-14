@@ -63,6 +63,9 @@ end
 
 local function RG_UnitName(unit)
 	local name, realm = UnitName(unit)
+	if issecretvalue and issecretvalue(name) then
+		return name, realm
+	end
 	return RG_ALTS_DB[name] or name, realm
 end
 
