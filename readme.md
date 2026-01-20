@@ -22,6 +22,7 @@ Currently supported addons:
 - ShestakUI
 - WeakAuras
 - DandersFrames
+- Unhalted Unit Frames
 
 [Guide on how to setup compatible addons](https://github.com/m33shoq/RG_Aliases/wiki/Setup-guide)<br>
 [Гайд по настройке совместимых аддонов RU](https://github.com/m33shoq/RG_Aliases/wiki/Setup-guide-RU)
