@@ -2,21 +2,26 @@ local GlobalAddonName = ...
 ---@class AliasesNamespace
 local AliasesNamespace = select(2, ...)
 
+-- M33Auras compatibility
+local M33AurasExists = C_AddOns.DoesAddOnExist("M33Auras")
+local M33AurasEnabled = C_AddOns.GetAddOnEnableState("M33Auras", UnitGUID("player")) ~= 0
+
 local module = AliasesNamespace:NewModule("weakauras", {
-	name = "WeakAuras",
-	desc = AliasesNamespace.L["Changes names formatted by WeakAuras"],
-	addonName = "WeakAuras",
+	name = M33AurasExists and "M33Auras" or "WeakAuras",
+	desc = AliasesNamespace.L["Changes names formatted by WeakAuras or M33Auras"],
+	addonName = M33AurasExists and "M33Auras" or "WeakAuras",
 })
 
 function AliasesNamespace.HookWeakAuras()
 	if C_AddOns.IsAddOnLoadable(module.addonName) then
 		EventUtil.ContinueOnAddOnLoaded(module.addonName, function()
-			AliasesNamespace.debugPrint("WeakAuras HOOKED")
-			AliasesNamespace.hookedModules["weakauras"] = true
-
+			local WeakAuras = M33AurasEnabled and M33Auras or WeakAuras
+			if not WeakAuras then
+				return
+			end
 
 			local RG_UnitName = AliasesNamespace.RG_UnitName
-			local WeakAuras = WeakAuras
+
 			if WeakAuras.GetName then
 				WeakAuras.GetName = function(name)
 					if not name then return end
@@ -65,6 +70,8 @@ function AliasesNamespace.HookWeakAuras()
 				end
 			end
 
+			AliasesNamespace.debugPrint("WeakAuras HOOKED")
+			AliasesNamespace.hookedModules["weakauras"] = true
 		end)
 	end
 end
