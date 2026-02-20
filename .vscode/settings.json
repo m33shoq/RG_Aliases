@@ -52,7 +52,12 @@
 		"ALWAYS",
 		"CANCEL",
 		"BackdropTemplateMixin",
-		"EditModeManagerFrame"
+		"EditModeManagerFrame",
+		"GMRT",
+		"UUFG",
+		"M33kAuras",
+		"WeakAuras",
+		"CompactRaidFrame1"
 	],
     "Lua.diagnostics.disable": [
 		"lowercase-global",

@@ -38,7 +38,7 @@ end
 function RG_ALIASES_SET_ALTS_DB(char_db)
 	RG_ALTS_DB = setmetatable(char_db or {}, {
 		__index = function(t, k)
-			local GUID = k and UnitGUID(k)
+			local GUID = k and UnitIsPlayer(k) and UnitGUID(k)
 
 			local bFriend = GUID and C_BattleNet.GetAccountInfoByGUID(GUID)
 			if bFriend and bFriend.battleTag then
