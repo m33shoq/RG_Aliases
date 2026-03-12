@@ -39,13 +39,13 @@ function RG_ALIASES_SET_ALTS_DB(char_db)
 	RG_ALTS_DB = setmetatable(char_db or {}, {
 		__index = function(t, k)
 			if not k then return nil end
-			if C_Secrets.ShouldUnitIdentityBeSecret(k) then return nil end
 			if not UnitIsPlayer(k) then return nil end
-			if not UnitIsFriend("player", k) then return nil end
 
-			local GUID = UnitGUID(k)
+			-- somehow can't figure out how to be safe here so just pcall and call it a day
+			local ok, GUIDOrError = pcall(UnitGUID, k)
+			if not ok or not GUIDOrError then return nil end
 
-			local bFriend = GUID and C_BattleNet.GetAccountInfoByGUID(GUID)
+			local bFriend = C_BattleNet.GetAccountInfoByGUID(GUIDOrError)
 			if bFriend and bFriend.battleTag then
 				local alias = rawget(t, bFriend.battleTag)
 				if alias then
