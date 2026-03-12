@@ -135,6 +135,11 @@ function AliasesNamespace.HookBlizzard()
 
 		hooksecurefunc("CompactUnitFrame_UpdateName", CUF_UpdateNameHook)
 		IterateCompactFrames(CUF_UpdateNameHook)
+		AliasesNamespace.RegisterCallback("DbUpdated", function()
+			if not MODULE_DISABLED then
+				IterateCompactFrames(CUF_UpdateNameHook)
+			end
+		end)
 	end)
 end
 
