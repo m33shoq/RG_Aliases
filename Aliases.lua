@@ -41,6 +41,7 @@ function RG_ALIASES_SET_ALTS_DB(char_db)
 			if not k then return nil end
 			if C_Secrets.ShouldUnitIdentityBeSecret(k) then return nil end
 			if not UnitIsPlayer(k) then return nil end
+			if not UnitIsFriend("player", k) then return nil end
 
 			local GUID = UnitGUID(k)
 
