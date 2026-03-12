@@ -21,12 +21,19 @@ function AliasesNamespace.HookDandersFrames()
 				return RG_UnitName(unit)
 			end
 
-			DF:IterateCompactFrames(function(frame)
-				if type(DF.UpdateNameText) == "function" then
-					DF:UpdateNameText(frame)
-				else
-					DF:UpdateName(frame)
-				end
+			local function fullUpdate()
+				DF:IterateCompactFrames(function(frame)
+					if type(DF.UpdateNameText) == "function" then
+						DF:UpdateNameText(frame)
+					else
+						DF:UpdateName(frame)
+					end
+				end)
+			end
+			fullUpdate()
+
+			AliasesNamespace.RegisterCallback("DbUpdated", function()
+				fullUpdate()
 			end)
 
 			AliasesNamespace:DisableBlizzardHook()
