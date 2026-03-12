@@ -64,6 +64,7 @@ local db = {}
 function AliasesNamespace.UpdateDB()
 	db = RG_ALTS_DB
 	AliasesNamespace.db = db
+	AliasesNamespace.FireCallback("DbUpdated")
 end
 
 local function RG_UnitName(unit)
@@ -296,6 +297,7 @@ function AliasesNamespace.addCharacter(name, alias)
 	end
 	AliasesNamespace.print("Added", name, "as", alias)
 	AliasesNamespace.FireCallback("AliasAdded", name, alias)
+	AliasesNamespace.FireCallback("DbUpdated")
 end
 
 
@@ -311,6 +313,7 @@ function AliasesNamespace.removeCharacter(name)
 	end
 	AliasesNamespace.print("Removed", name)
 	AliasesNamespace.FireCallback("AliasRemoved", name)
+	AliasesNamespace.FireCallback("DbUpdated")
 end
 
 ------------------------------------------------------------------------

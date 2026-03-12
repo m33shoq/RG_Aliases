@@ -46,6 +46,10 @@ local function hookGrid2()
 		return Name
 	end
 
+	AliasesNamespace.RegisterCallback("DbUpdated", function()
+		Name:UpdateAllUnits()
+	end)
+
 	Grid2.setupFunc[TAGNAME] = Create
 
 	Grid2:DbSetStatusDefaultValue( TAGNAME, {type = TAGNAME, color1 = {r=0,g=.6,b=1,a=.6}})
