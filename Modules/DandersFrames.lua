@@ -22,7 +22,11 @@ function AliasesNamespace.HookDandersFrames()
 			end
 
 			DF:IterateCompactFrames(function(frame)
-				DF:UpdateNameText(frame)
+				if type(DF.UpdateNameText) == "function" then
+					DF:UpdateNameText(frame)
+				else
+					DF:UpdateName(frame)
+				end
 			end)
 
 			AliasesNamespace:DisableBlizzardHook()
