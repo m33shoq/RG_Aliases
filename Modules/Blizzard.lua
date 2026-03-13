@@ -10,87 +10,68 @@ AliasesNamespace:NewModule("blizzard", {
 
 local RG_UnitName = AliasesNamespace.RG_UnitName
 
-local function IsValidFrame(frame)
-    if not frame or (frame.IsForbidden and frame:IsForbidden()) then return false end
+-- Thanks KHM
+local function IterateCompactFrames(groupType)
+    local index = 0
+    local groupIndex = 1
+    local frame, doneRaid, doneParty, doneOldStyle
 
-    local name = frame:GetName()
-    local unit = frame.unit or frame.displayedUnit
-
-    -- 1. Block by Frame Name Patterns
-    if name and (string.find(name, "NamePlate") or string.find(name, "ClassNameplate")) then
-        return false
-    end
-
-    -- 2. Block by Parent Name Patterns
-    local parent = frame:GetParent()
-    if parent then
-        local pName = parent:GetName()
-        if pName and (string.find(pName, "NamePlate") or string.find(pName, "ClassNameplate")) then
-            return false
+    if groupType then
+        if groupType == "raid" then
+            doneParty = true
+        else
+            doneRaid = true
         end
     end
 
-    -- 3. Block by Unit ID
-    if unit and string.find(string.lower(unit), "nameplate") then
-        return false
-    end
+    return function()
+        while not doneRaid do
+            index = index + 1
 
-    -- 4. Whitelist Check (The most secure method)
-    -- Only allow known CompactRaid/Party frames.
-    -- If we are in EditMode, we might need to be more lenient, but for normal play:
-    if name and (string.find(name, "CompactRaidFrame") or string.find(name, "CompactPartyFrame")) then
-        return true
-    end
+            if index > 5 then
+                index = 1
+                groupIndex = groupIndex + 1
+            end
 
-    -- If frame has no name or doesn't match our whitelist, assume it's unsafe (likely a nameplate or other compact frame usage)
-    return false
-end
+            frame = _G["CompactRaidGroup"..groupIndex.."Member"..index]
 
--- Utility to iterate over all active compact frames (Party/Raid)
-local function IterateCompactFrames(callback)
-    local processed = {}
-
-    local function tryProcess(frame)
-        if type(frame) ~= "table" or not frame.IsVisible or not frame:IsVisible() then return end
-        if frame.IsForbidden and frame:IsForbidden() then return end
-
-        -- Critical Check: IsValidFrame
-        if not IsValidFrame(frame) then return end
-
-        if not frame.healthBar or not frame.optionTable then return end
-        if processed[frame] then return end
-
-        if (frame.unit) or (EditModeManagerFrame and EditModeManagerFrame:IsShown()) then
-            callback(frame)
-            processed[frame] = true
-        end
-    end
-
-    -- CompactRaidFrameContainer iteration (modern raid frames)
-    if CompactRaidFrameContainer and CompactRaidFrameContainer.flowFrames then
-        for _, frame in pairs(CompactRaidFrameContainer.flowFrames) do tryProcess(frame) end
-    end
-    if CompactRaidFrameContainer then
-        local children = {CompactRaidFrameContainer:GetChildren()}
-        for _, child in ipairs(children) do
-            tryProcess(child)
-            if child.GetChildren then
-                 local members = {child:GetChildren()}
-                 for _, member in ipairs(members) do tryProcess(member) end
+            if frame then
+                return frame
+            else
+                if groupIndex >= 8 then
+                    doneRaid = true
+                    index = 0
+                    break
+                end
             end
         end
-    end
 
-    -- CompactPartyFrame iteration
-    for i = 1, 5 do tryProcess(_G["CompactPartyFrameMember" .. i]) end
+        while not doneParty do
+            index = index + 1
 
-    -- Legacy/Explicit Raid Frame iteration
-    if CompactRaidFrame1 and CompactRaidFrame1:IsVisible() then
-         local i = 1
-         while _G["CompactRaidFrame"..i] do
-            tryProcess(_G["CompactRaidFrame"..i])
-            i = i + 1
-         end
+            frame = _G["CompactPartyFrameMember"..index]
+
+            if frame then
+                return frame
+            else
+                index = 0
+                doneParty = true
+                break
+            end
+        end
+
+        while not doneOldStyle do
+            index = index + 1
+
+            frame = _G["CompactRaidFrame"..index]
+
+            if frame then
+                return frame
+            else
+                doneOldStyle = true
+                break
+            end
+        end
     end
 end
 
@@ -132,12 +113,24 @@ function AliasesNamespace.HookBlizzard()
 	C_Timer.After(2, function()
 		AliasesNamespace.debugPrint("Blizzard frames HOOKED")
 		AliasesNamespace.hookedModules["blizzard"] = true
+		if MODULE_DISABLED then
+			AliasesNamespace.debugPrint("Blizzard frames HOOKED but module is disabled, not applying hooks")
+			return
+		end
 
 		hooksecurefunc("CompactUnitFrame_UpdateName", CUF_UpdateNameHook)
-		IterateCompactFrames(CUF_UpdateNameHook)
+		local function fullUpdate()
+			for frame in IterateCompactFrames() do
+				if frame.unit then
+					CUF_UpdateNameHook(frame)
+				end
+			end
+		end
+
+		fullUpdate()
 		AliasesNamespace.RegisterCallback("DbUpdated", function()
 			if not MODULE_DISABLED then
-				IterateCompactFrames(CUF_UpdateNameHook)
+				fullUpdate()
 			end
 		end)
 	end)
