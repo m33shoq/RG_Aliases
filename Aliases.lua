@@ -180,6 +180,10 @@ local function loadModules()
 	if RG_ALTS_SETTINGS.settings["dandersframes"] then
 		AliasesNamespace.HookDandersFrames()
 	end
+
+	if RG_ALTS_SETTINGS.settings["mshframes"] then
+		AliasesNamespace.HookMshFrames()
+	end
 end
 local addon = CreateFrame("Frame")
 addon:RegisterEvent("ADDON_LOADED")
