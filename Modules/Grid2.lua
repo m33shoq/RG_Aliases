@@ -26,7 +26,8 @@ local function hookGrid2()
 	Name.IsActive = Grid2.statusLibrary.IsActive
 
 	function Name:GetText(unit)
-		return RG_UnitName(unit) --or UnitName(unit) or  (defaultName==1 and unit) or defaultName
+		local name = RG_UnitName(unit) --or UnitName(unit) or  (defaultName==1 and unit) or defaultName
+		return name
 	end
 
 	function Name:UNIT_NAME_UPDATE(_, unit)
