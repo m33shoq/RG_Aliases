@@ -10,6 +10,7 @@ realmKey = realmKey:gsub(" ","")
 AliasesNamespace.realmKey = realmKey
 AliasesNamespace.charKey = charName .. "-" .. realmKey
 AliasesNamespace.charName = charName
+local issecretvalue = issecretvalue or function() return false end
 
 function AliasesNamespace.print(...)
 	print("|cffee5555[Rak Gaming Aliases]|r", ...)
@@ -68,15 +69,18 @@ function AliasesNamespace.UpdateDB()
 end
 
 local function RG_UnitName(unit)
+	if issecretvalue(unit) then
+		return
+	end
 	local name, realm = UnitName(unit)
-	if issecretvalue and issecretvalue(name) then
+	if issecretvalue(name) then
 		return name, realm
 	end
 	return RG_ALTS_DB[name] or name, realm
 end
 
 local function RG_ClassColorName(unit)
-	if unit and UnitExists(unit) then
+	if unit and not issecretvalue(unit) and UnitExists(unit) then
 		local name = RG_UnitName(unit)
 		local _, class = UnitClass(unit)
 		if not class then

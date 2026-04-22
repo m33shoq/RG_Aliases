@@ -5,6 +5,7 @@ local AliasesNamespace = select(2, ...)
 -- M33kAuras compatibility
 local M33kAurasExists = C_AddOns.DoesAddOnExist("M33kAuras")
 local M33kAurasEnabled = C_AddOns.GetAddOnEnableState("M33kAuras", UnitGUID("player")) ~= 0
+local issecretvalue = issecretvalue or function() return false end
 
 local module = AliasesNamespace:NewModule("weakauras", {
 	name = M33kAurasExists and "M33kAuras" or "WeakAuras",
@@ -32,7 +33,7 @@ function AliasesNamespace.HookWeakAuras()
 
 			if WeakAuras.UnitName then
 				WeakAuras.UnitName = function(unit)
-					if not unit then return end
+					if not unit or issecretvalue(unit) then return end
 
 					local name, realm = UnitName(unit)
 
