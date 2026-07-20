@@ -252,21 +252,24 @@ end)
 
 function AliasesNamespace.enableModule(moduleName)
 	moduleName = moduleName:lower()
-	if modules[moduleName] then
+	local module = modules[moduleName]
+	if module then
 		RG_ALTS_SETTINGS.settings[moduleName] = true
 		AliasesNamespace.print("Enabled", moduleName)
 		AliasesNamespace.FireCallback("ModuleEnabled", moduleName)
 
-		StaticPopupDialogs["RGALIAS_RELOADUI"] = {
-			text = "|cffee5555[Rak Gaming Aliases]|r\n\n" .. AliasesNamespace.L["Reload UI to apply changes?"],
-			button1 = "Reload",
-			button2 = CANCEL,
-			OnAccept = ReloadUI,
-			timeout = 0,
-			whileDead = 1,
-			hideOnEscape = 1,
-		}
-		StaticPopup_Show("RGALIAS_RELOADUI")
+		if not module.noReload then
+			StaticPopupDialogs["RGALIAS_RELOADUI"] = {
+				text = "|cffee5555[Rak Gaming Aliases]|r\n\n" .. AliasesNamespace.L["Reload UI to apply changes?"],
+				button1 = "Reload",
+				button2 = CANCEL,
+				OnAccept = ReloadUI,
+				timeout = 0,
+				whileDead = 1,
+				hideOnEscape = 1,
+			}
+			StaticPopup_Show("RGALIAS_RELOADUI")
+		end
 	else
 		AliasesNamespace.print("No such module", moduleName)
 	end
@@ -274,21 +277,24 @@ end
 
 function AliasesNamespace.disableModule(moduleName)
 	moduleName = moduleName:lower()
-	if modules[moduleName] then
+	local module = modules[moduleName]
+	if module then
 		RG_ALTS_SETTINGS.settings[moduleName] = false
 		AliasesNamespace.print("Disabled", moduleName)
 		AliasesNamespace.FireCallback("ModuleDisabled", moduleName)
 
-		StaticPopupDialogs["RGALIAS_RELOADUI"] = {
-			text = "|cffee5555[Rak Gaming Aliases]|r\n\n" .. AliasesNamespace.L["Reload UI to apply changes?"],
-			button1 = "Reload",
-			button2 = CANCEL,
-			OnAccept = ReloadUI,
-			timeout = 0,
-			whileDead = 1,
-			hideOnEscape = 1,
-		}
-		StaticPopup_Show("RGALIAS_RELOADUI")
+		if not module.noReload then
+			StaticPopupDialogs["RGALIAS_RELOADUI"] = {
+				text = "|cffee5555[Rak Gaming Aliases]|r\n\n" .. AliasesNamespace.L["Reload UI to apply changes?"],
+				button1 = "Reload",
+				button2 = CANCEL,
+				OnAccept = ReloadUI,
+				timeout = 0,
+				whileDead = 1,
+				hideOnEscape = 1,
+			}
+			StaticPopup_Show("RGALIAS_RELOADUI")
+		end
 	else
 		AliasesNamespace.print("No such module", moduleName)
 	end

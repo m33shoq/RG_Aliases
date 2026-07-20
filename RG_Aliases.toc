@@ -29,3 +29,4 @@ Modules/RaidFrameSettings.lua
 Modules/DandersFrames.lua
 Modules/UnhaltedUnitFrames.lua
 Modules/mshFrames.lua
+Modules/EllesmereUI.lua
