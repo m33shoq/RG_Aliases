@@ -3,6 +3,7 @@ local GlobalAddonName = ...
 ---@class AliasesNamespace
 local AliasesNamespace = select(2, ...)
 
+_G.RG_ALIAS = AliasesNamespace
 
 local realmKey = GetRealmName() or ""
 local charName = UnitName'player' or ""
